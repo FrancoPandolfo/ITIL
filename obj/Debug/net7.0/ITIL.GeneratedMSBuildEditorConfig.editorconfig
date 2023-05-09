@@ -10,8 +10,12 @@ build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = ITIL
 build_property.RootNamespace = ITIL
 build_property.ProjectDir = /home/fpandolfo/ITIL/
-build_property.RazorLangVersion = 7.0
+build_property.RazorLangVersion = 2.1
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
 build_property.MSBuildProjectDirectory = /home/fpandolfo/ITIL
 build_property._RazorSourceGeneratorDebug = 
+
+[/home/fpandolfo/ITIL/Views/ServiceDesk/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2VydmljZURlc2svSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 

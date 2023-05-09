@@ -1,10 +1,5 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using tp7518.Data;
+using ITIL.Data;
 
 public class Startup
 {
@@ -18,13 +13,14 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         // Register the DbContext with the connection string
-        services.AddDbContext<PHDbContext>(options =>
+        services.AddDbContext<ITILDbContext>(options =>
             options.UseNpgsql(Configuration.GetConnectionString("MyPostgresConnection")));
 
         services.AddControllers();
+        services.AddControllersWithViews();
     }
 
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, PHDbContext dbContext)
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ITILDbContext dbContext)
     {
         // Use exception handling middleware to handle any exceptions thrown by the app
         app.UseExceptionHandler("/error");
