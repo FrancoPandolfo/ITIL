@@ -50,17 +50,9 @@
               "target": "Package",
               "version": "[7.0.5, )"
             },
-            "Microsoft.AspNetCore.Mvc": {
-              "target": "Package",
-              "version": "[2.2.0, )"
-            },
-            "Microsoft.AspNetCore.Mvc.NewtonsoftJson": {
+            "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": {
               "target": "Package",
               "version": "[7.0.5, )"
-            },
-            "Microsoft.AspNetCore.Mvc.ViewFeatures": {
-              "target": "Package",
-              "version": "[2.2.0, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
@@ -96,7 +88,7 @@
             },
             "Se": {
               "target": "Package",
-              "version": "[1.0.22, )"
+              "version": "[1.0.23, )"
             }
           },
           "imports": [
@@ -118,7 +110,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/home/fpandolfo/dotnet/sdk/7.0.203/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/home/fpandolfo/dotnet7/sdk/7.0.203/RuntimeIdentifierGraph.json"
         }
       }
     }
