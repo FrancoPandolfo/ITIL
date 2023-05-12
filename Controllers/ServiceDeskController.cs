@@ -3,9 +3,8 @@ using ITIL.Data.Domain;
 using ITIL.Model;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ITIL.Controllers.Domain
+namespace ITIL.Controllers
 { 
-    [Route("[controller]")]
     public class ServiceDeskController : Controller
     {
         public ITILDbContext DbContext {get;set;}
@@ -14,10 +13,10 @@ namespace ITIL.Controllers.Domain
             DbContext = dbContext;
         }
 
-        [HttpGet("/ServiceDesk/Index")]
+        [HttpGet("/ServiceDesk")]
         public IActionResult Index()
         {
-            return View();
+            return View("Index");
         }
 
         [HttpPost]

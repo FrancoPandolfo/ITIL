@@ -7,7 +7,7 @@
       "applicationUrl": "http://localhost:5000;https://localhost:5001",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "http://*:5000;https://*:5001",
+        "ASPNETCORE_URLS": "http://localhost:5000;https://localhost:5001",
         "DATABASE_URL": "postgres://francokevin:VTFAayRx8eeAjuA1ciFtssNqRRtC0CIB@dpg-chcq4je7avjcvo47deqg-a.oregon-postgres.render.com/gestiondb"
       }
     }
