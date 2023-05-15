@@ -19,21 +19,29 @@ namespace ITIL.Controllers
             return View("Index");
         }
 
-        [HttpPost]
-        public IActionResult Create(ProblemDto problem)
+        [HttpPost("/ServiceDesk/SaveIncident")]
+        public IActionResult SaveIncident([FromBody] IncidentDto incident)
         {
             if (ModelState.IsValid)
             {
-                DbContext.Problems.Add(new Problem()
+                DbContext.Incidents.Add(new Incident()
                 {
-                  Title = problem.Title,
-                  Description = problem.Description,
-                  CreatedDate = DateTime.Now  
+                  Title = incident.Title,
+                  Description = incident.Description,
+                  CreatedDate = DateTime.UtcNow 
                 });
                 DbContext.SaveChanges();
-                return RedirectToAction("Index", "Home");
+                return Ok(incident);
             }
-            return View(problem);
+            return BadRequest();
+        }
+
+        [HttpGet("/ServiceDesk/Incidents")]
+        public IActionResult Incidents()
+        {
+            var incidents = DbContext.Incidents;
+            if(incidents.Any()){ return Ok(incidents); }
+            return NotFound();
         }
     }
 }

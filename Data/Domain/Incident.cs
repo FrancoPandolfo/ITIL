@@ -1,6 +1,6 @@
 namespace ITIL.Data.Domain 
 {
-    public class Problem : EntityBase
+    public class Incident : EntityBase
     {
         public string Title { get; set; }
         public string Description { get; set; }
