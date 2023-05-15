@@ -4,6 +4,37 @@
     ViewData["Title"] = "ITIL";
 }
 
+<style>
+    body {
+        background-image: url("https://www.fair-computer.de/wp-content/uploads/adobestock_280046195.jpg");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center center;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    h1 {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        color: white;
+    }
+
+    .link {
+        position: absolute;
+        top: 60px;
+        left: 20px;
+        color: white;
+        text-decoration: none;
+    }
+</style>
+
 <h1>@ViewData["Title"]</h1>
 
-<img src="https://www.servicedeskinstitute.com/wp-content/uploads/2018/02/IT-business-support-new-1024x640.jpg" alt="Service Desk" />
+<a class="link" href="https://localhost:5001/ServiceDesk/Incidents">Incidents</a>
+

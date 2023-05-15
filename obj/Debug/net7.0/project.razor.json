@@ -18645,6 +18645,11 @@
   "RootNamespace": "ITIL",
   "Documents": [
     {
+      "FilePath": "/home/fpandolfo/ITIL/Views/ServiceDesk/Incidents.cshtml",
+      "TargetPath": "Views\\ServiceDesk\\Incidents.cshtml",
+      "FileKind": "mvc"
+    },
+    {
       "FilePath": "/home/fpandolfo/ITIL/Views/ServiceDesk/Index.cshtml",
       "TargetPath": "Views\\ServiceDesk\\Index.cshtml",
       "FileKind": "mvc"

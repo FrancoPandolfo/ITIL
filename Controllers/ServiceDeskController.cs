@@ -40,7 +40,7 @@ namespace ITIL.Controllers
         public IActionResult Incidents()
         {
             var incidents = DbContext.Incidents;
-            if(incidents.Any()){ return Ok(incidents); }
+            if(incidents.Any()){ return View(incidents); }
             return NotFound();
         }
     }

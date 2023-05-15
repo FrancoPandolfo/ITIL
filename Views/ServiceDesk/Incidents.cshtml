@@ -1,0 +1,55 @@
+@using ITIL.Data.Domain;
+@model IEnumerable<Incident>
+
+@{
+    ViewData["Title"] = "Incidents";
+}
+
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+</style>
+
+<h1>@ViewData["Title"]</h1>
+
+@if (Model.Any())
+{
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Created Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var incident in Model)
+            {
+                <tr>
+                    <td>@incident.Title</td>
+                    <td>@incident.Description</td>
+                    <td>@incident.CreatedDate</td>
+                </tr>
+                <tr>
+                    <td colspan="3"><hr></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No incidents found.</p>
+}
