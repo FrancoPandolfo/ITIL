@@ -1,7 +1,18 @@
 @model dynamic
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment
 
 @{
     ViewData["Title"] = "ITIL";
+    var incidentsUrl = string.Empty;
+
+    if (WebHostEnvironment.IsDevelopment())
+    {
+        incidentsUrl = "https://localhost:5001/ServiceDesk/Incidents";
+    }
+    else
+    {
+        incidentsUrl = "https://itilweb.onrender.com/ServiceDesk/Incidents";
+    }
 }
 
 <style>
@@ -14,21 +25,20 @@
         margin: 0;
         padding: 0;
         display: flex;
-        justify-content: center;
-        align-items: center;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
     }
 
     h1 {
-        position: absolute;
-        top: 20px;
-        left: 20px;
+        margin-top: 20px;
+        margin-left: 20px;
         color: white;
     }
 
     .link {
-        position: absolute;
-        top: 60px;
-        left: 20px;
+        margin-top: 10px;
+        margin-left: 20px;
         color: white;
         text-decoration: none;
     }
@@ -36,5 +46,4 @@
 
 <h1>@ViewData["Title"]</h1>
 
-<a class="link" href="https://localhost:5001/ServiceDesk/Incidents">Incidents</a>
-
+<a class="link" href="@incidentsUrl">Incidents</a>
