@@ -46,26 +46,49 @@
         text-decoration: none;
     }
 
-    .login {
-        margin-top: 10px;
-        margin-right: 20px;
-        color: black;
-        text-decoration: none;
+    .user-links {
         position: absolute;
         top: 20px;
         right: 20px;
+    }
+
+    .login,
+    .logout {
+        margin-right: 10px;
+        color: black;
+        text-decoration: none;
     }
 </style>
 
 <h1>@ViewData["Title"]</h1>
 
-@if (User.Identity.IsAuthenticated)
-{
-    <span class="login">@User.Identity.Name</span>
-}
-else
-{
-    <a class="login" href="@accountUrl">Login</a>
-}
+<div class="user-links">
+    @if (User.Identity.IsAuthenticated)
+    {
+        <span class="login">@User.Identity.Name</span>
+        <a class="logout" href="javascript:void(0);" onclick="logout()">Logout</a>
+    }
+    else
+    {
+        <a class="login" href="@accountUrl">Login</a>
+    }
+</div>
 
 <a class="link" href="@incidentsUrl">Incidentes</a>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function logout() {
+        $.post("/Account/Logout")
+            .done(function () {
+                // Handle successful logout
+                alert("Logged out successfully!");
+                // Optionally, redirect the user to another page after logout
+                window.location.href = "/Home/Index";
+            })
+            .fail(function () {
+                // Handle logout failure
+                alert("Failed to logout.");
+            });
+    }
+</script>

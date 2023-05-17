@@ -77,5 +77,14 @@ namespace ITIL.Controllers
         {
             return View();
         }
+
+        [HttpPost("/Account/Logout")]
+        public async Task<IActionResult> Logout()
+        {
+            // Sign out the current user
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            return RedirectToAction("Index", "Home");
+        }
     }
 }
