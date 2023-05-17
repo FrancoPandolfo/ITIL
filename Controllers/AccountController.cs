@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
 using ITIL.Data;
 using ITIL.Data.Domain;
 using ITIL.Model;
@@ -21,16 +24,30 @@ namespace ITIL.Controllers
 
             var currentUser = DbContext.Users.SingleOrDefault(p => p.Email == email && p.Password == user.Password);
 
-            if (currentUser == null) 
+            if (currentUser == null)
             {
                 return StatusCode(StatusCodes.Status401Unauthorized);
             }
-                
-            return Ok(new 
+
+            // Create claims for the authenticated user
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, email),
+                // Add any additional claims as needed
+            };
+
+            // Create the identity
+            var userIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            // Authenticate the user
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(userIdentity));
+
+            return Ok(new
             {
                 userId = currentUser.Id
             });
         }
+
 
         [HttpPost("/Account/Register")]
         public async Task<IActionResult> Register([FromBody] UserDto user)
@@ -53,6 +70,12 @@ namespace ITIL.Controllers
             DbContext.SaveChanges();
                 
             return Accepted();
+        }
+
+        [HttpGet()]
+        public IActionResult Index()
+        {
+            return View();
         }
     }
 }

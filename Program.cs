@@ -1,5 +1,6 @@
 using ITIL.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,10 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddControllersWithViews();
 //builder.Services.AddRazorPages();
+
+// Add authentication services
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie();
 
 builder.Services.AddControllers(options =>
 {
@@ -39,8 +44,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
+// Enable authentication
 app.UseAuthentication();
-// app.UseIdentityServer();
 app.UseAuthorization();
 
 app.MapControllerRoute(
