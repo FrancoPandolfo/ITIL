@@ -1,4 +1,4 @@
-namespace tp7518.Sys
+namespace ITIL.Sys
 {
     public class BusinessException : Exception
     {

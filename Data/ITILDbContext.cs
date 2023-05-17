@@ -22,5 +22,6 @@ namespace ITIL.Data
 
         public DbSet<Incident> Incidents { get; set; }
         public DbSet<Problem> Problems { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }
