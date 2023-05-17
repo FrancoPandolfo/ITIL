@@ -42,5 +42,12 @@ namespace ITIL.Controllers
             var incidents = DbContext.Incidents;
             return View(incidents);
         }
+
+
+        [HttpGet("/ServiceDesk/NewIncident")]
+        public IActionResult NewIncident()
+        {
+            return View();
+        }
     }
 }

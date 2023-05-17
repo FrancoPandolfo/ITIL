@@ -2,7 +2,7 @@
 @model IEnumerable<Incident>
 
 @{
-    ViewData["Title"] = "Incidents";
+    ViewData["Title"] = "Incidentes";
 }
 
 <style>
@@ -20,9 +20,38 @@
     tr:nth-child(even) {
         background-color: #f2f2f2;
     }
+
+    .new-incident-button {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 16px;
+        text-decoration: none;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .new-incident-button:hover {
+        background-color: #45a049;
+    }
+
+    .volver-link {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        color: #000;
+        text-decoration: none;
+        font-size: 16px;
+    }
 </style>
 
 <h1>@ViewData["Title"]</h1>
+
+<a class="new-incident-button" href="/ServiceDesk/NewIncident">Nuevo Incidente</a>
+
+<a class="volver-link" href="/Home/Index">Volver</a>
 
 @if (Model.Any())
 {
