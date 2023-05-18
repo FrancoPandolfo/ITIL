@@ -42,9 +42,12 @@ namespace ITIL.Controllers
             // Authenticate the user
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(userIdentity));
 
+            // Add the userId to the response headers
+            Response.Headers.Add("user-id", currentUser.Id.ToString());
+
             return Ok(new
             {
-                userId = currentUser.Id
+                userId= currentUser.Id
             });
         }
 

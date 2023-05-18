@@ -9,5 +9,7 @@ namespace ITIL.Data.Domain
 
         [StringLength(100)]
         public string Password {get; set;}
+
+        public virtual ICollection<Incident> Incidents {get; set;}
     }
 }

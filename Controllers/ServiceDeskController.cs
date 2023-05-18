@@ -24,15 +24,20 @@ namespace ITIL.Controllers
         {
             if (ModelState.IsValid)
             {
+                var user = DbContext.Users.SingleOrDefault(u => u.Id == incident.UserId);
                 DbContext.Incidents.Add(new Incident()
                 {
-                  Title = incident.Title,
-                  Description = incident.Description,
-                  CreatedDate = DateTime.UtcNow 
+                    Title = incident.Title,
+                    Description = incident.Description,
+                    CreatedDate = DateTime.UtcNow,
+                    UserId = incident.UserId,
+                    User = user
                 });
+
                 DbContext.SaveChanges();
                 return Ok(incident);
             }
+
             return BadRequest();
         }
 

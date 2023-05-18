@@ -45,7 +45,7 @@
         padding: 10px 20px;
         font-size: 16px;
         text-decoration: none;
-        background-color: #4CAF50;
+        background-color: #3012a7;
         color: white;
         border: none;
         border-radius: 4px;
@@ -53,7 +53,7 @@
     }
 
     .new-incident-button:hover {
-        background-color: #45a049;
+        background-color: #250a91;
     }
 
     .volver-link {
@@ -83,38 +83,52 @@
         <label for="Description">Descripción</label>
         <textarea id="Description" name="Description" class="form-control" rows="5"></textarea>
     </div>
-    <button type="submit" class="btn btn-primary">Crear</button>
+    <button type="submit" class="new-incident-button">Crear</button>
 </form>
 
 <script>
     document.getElementById("incident-form").addEventListener("submit", function (e) {
         e.preventDefault();
 
-        var title = document.getElementById("Title").value;
-        var description = document.getElementById("Description").value;
+        // Retrieve the userId from localStorage
+        var userId = localStorage.getItem("user-id");
 
-        var incident = {
-            Title: title,
-            Description: description
-        };
+        // Check if userId is available
+        if (userId) {
+            localStorage.setItem("user-id", userId);
+            var title = document.getElementById("Title").value;
+            var description = document.getElementById("Description").value;
 
-        fetch("/ServiceDesk/SaveIncident", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(incident)
-        })
-        .then(function (response) {
-            if (response.ok) {
-                window.location.href = "/ServiceDesk/Incidents";
-            } else {
+            var incident = {
+                Title: title,
+                Description: description,
+                UserId: userId
+            };
+
+            // Include the userId in the request headers
+            var headers = {
+                "Content-Type": "application/json",
+                "user-id": userId
+            };
+
+            fetch("/ServiceDesk/SaveIncident", {
+                method: "POST",
+                headers: headers,
+                body: JSON.stringify(incident)
+            })
+            .then(function (response) {
+                if (response.ok) {
+                    window.location.href = "/ServiceDesk/Incidents";
+                } else {
+                    showError("Failed to save the incident.");
+                }
+            })
+            .catch(function () {
                 showError("Failed to save the incident.");
-            }
-        })
-        .catch(function () {
-            showError("Failed to save the incident.");
-        });
+            });
+        } else {
+            showError("User ID not found. Please log in again.");
+        }
     });
 
     function showError(message) {

@@ -54,7 +54,7 @@
         margin-top: 10px;
         font-size: 16px;
         border-radius: 3px;
-        background-color: #4CAF50;
+        background-color: #3012a7;
         color: white;
         border: none;
     }
@@ -107,6 +107,10 @@
         })
         .then(response => {
             if (response.ok) {
+                // Save user ID in headers
+                var userId = response.headers.get("user-id");
+                localStorage.setItem("user-id", userId);
+
                 window.location.href = "/Home/Index";
             } else if (response.status === 401) {
                 alert("Incorrect email or password.");

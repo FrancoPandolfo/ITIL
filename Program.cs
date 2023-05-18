@@ -44,6 +44,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
+app.UseMiddleware<UserIdMiddleware>();
+
 // Enable authentication
 app.UseAuthentication();
 app.UseAuthorization();
