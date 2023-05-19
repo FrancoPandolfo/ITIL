@@ -38,12 +38,15 @@
     }
 
     .volver-link {
-        position: absolute;
-        top: 20px;
-        right: 20px;
         color: #000;
         text-decoration: none;
         font-size: 16px;
+    }
+
+    .user-links {
+        position: absolute;
+        top: 20px;
+        right: 20px;
     }
 </style>
 
@@ -51,7 +54,13 @@
 
 <a class="new-incident-button" href="/ServiceDesk/NewIncident">Nuevo Incidente</a>
 
-<a class="volver-link" href="/Home/Index">Volver</a>
+<div class="user-links">
+    @if (User.Identity.IsAuthenticated)
+    {
+        <span>@User.Identity.Name</span>
+    }
+    <a class="volver-link" href="/Home/Index">Volver</a>
+</div>
 
 @if (Model.Any())
 {

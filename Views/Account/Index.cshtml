@@ -110,6 +110,8 @@
                 // Save user ID in headers
                 var userId = response.headers.get("user-id");
                 localStorage.setItem("user-id", userId);
+                var email = response.headers.get("email");
+                localStorage.setItem("email", email);
 
                 window.location.href = "/Home/Index";
             } else if (response.status === 401) {
