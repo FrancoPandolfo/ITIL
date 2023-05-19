@@ -71,6 +71,24 @@
         top: 20px;
         right: 20px;
     }
+
+    .login-effect {
+        position: relative;
+    }
+
+     .login-spinner {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: none;
+        width: 160px; /* Adjust the width as desired */
+        height: 160px; /* Adjust the height as desired */
+    }
+
+    .login-effect.login-in-progress .login-spinner {
+        display: block;
+    }
 </style>
 
 <div class="user-links">
@@ -92,7 +110,10 @@
         <label for="Description">Descripción</label>
         <textarea id="Description" name="Description" class="form-control" rows="5"></textarea>
     </div>
-    <button type="submit" class="new-incident-button">Crear</button>
+    <button type="submit" class="new-incident-button login-effect">
+        Crear
+        <img class="login-spinner" src="https://icon-library.com/images/waiting-icon-gif/waiting-icon-gif-7.jpg" alt="Loading..." />
+    </button>
 </form>
 
 <script>
@@ -120,6 +141,10 @@
                 "user-id": userId
             };
 
+            // Show the spinner when the request is being made
+            var spinner = document.querySelector(".login-spinner");
+            spinner.style.display = "block";
+
             fetch("/ServiceDesk/SaveIncident", {
                 method: "POST",
                 headers: headers,
@@ -131,9 +156,15 @@
                 } else {
                     showError("Failed to save the incident.");
                 }
+                
+                // Hide the spinner when the request is completed
+                spinner.style.display = "none";
             })
             .catch(function () {
                 showError("Failed to save the incident.");
+
+            // Hide the spinner when the request is completed
+            spinner.style.display = "none";
             });
         } else {
             showError("User ID not found. Please log in again.");

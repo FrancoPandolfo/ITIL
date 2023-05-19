@@ -67,6 +67,24 @@
         text-decoration: none;
         font-size: 16px;
     }
+
+    .login-effect {
+        position: relative;
+    }
+
+     .login-spinner {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: none;
+        width: 160px; /* Adjust the width as desired */
+        height: 160px; /* Adjust the height as desired */
+    }
+
+    .login-effect.login-in-progress .login-spinner {
+        display: block;
+    }
 </style>
 
 <a class="volver-link" href="/Home/Index">Volver</a>
@@ -82,7 +100,10 @@
         <input type="password" id="password" name="password" required />
     </div>
     <div>
-        <button type="submit">Login</button>
+        <button type="submit" class="login-effect">
+            Login
+            <img class="login-spinner" src="https://icon-library.com/images/waiting-icon-gif/waiting-icon-gif-7.jpg" alt="Loading..." />
+        </button>
     </div>
 </form>
 
@@ -97,6 +118,10 @@
             email: email,
             password: password
         };
+
+        //Show Spinner
+        document.querySelector(".login-spinner").style.display = "block";
+        document.querySelector(".login-effect").classList.add("login-in-progress");
 
         fetch("/Account/Login", {
             method: "POST",
@@ -119,10 +144,16 @@
             } else {
                 alert("An error occurred. Please try again later.");
             }
+            // Hide spinner
+            document.querySelector(".login-spinner").style.display = "none";
+            document.querySelector(".login-effect").classList.remove("login-in-progress");
         })
         .catch(error => {
             console.error(error);
             alert("An error occurred. Please try again later.");
+            // Hide spinner
+            document.querySelector(".login-spinner").style.display = "none";
+            document.querySelector(".login-effect").classList.remove("login-in-progress");
         });
     });
 </script>
