@@ -54,5 +54,20 @@ namespace ITIL.Controllers
         {
             return View();
         }
+
+        [HttpPost("/ServiceDesk/DeleteIncident")]
+        public IActionResult DeleteIncident([FromBody] long incidentId)
+        {
+            var incident = DbContext.Incidents.SingleOrDefault(i => i.Id == incidentId);
+            if(incident != null)
+            { 
+                DbContext.Incidents.Remove(incident);
+                DbContext.SaveChanges();
+                return Ok();
+            }
+
+            return NotFound($"{incidentId} not found");
+        }
+
     }
 }
