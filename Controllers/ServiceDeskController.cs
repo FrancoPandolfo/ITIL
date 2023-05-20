@@ -48,6 +48,17 @@ namespace ITIL.Controllers
             return View(incidents);
         }
 
+        [HttpGet("/ServiceDesk/Incidents/{incidentId}")]
+        public IActionResult IncidentInfo(long incidentId)
+        {
+            var incident = DbContext.Incidents.SingleOrDefault(i => i.Id == incidentId);
+            if(incident != null)
+            {
+              return View(incident);
+            }
+            return NotFound($"{incidentId} not found");
+                
+        }
 
         [HttpGet("/ServiceDesk/NewIncident")]
         public IActionResult NewIncident()
