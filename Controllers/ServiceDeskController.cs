@@ -41,6 +41,24 @@ namespace ITIL.Controllers
             return BadRequest();
         }
 
+        [HttpPatch("/ServiceDesk/Incidents/{incidentId}")]
+        public IActionResult UpdateIncident([FromBody] IncidentDto modifiedIncident, long incidentId)
+        {
+            if (ModelState.IsValid)
+            {
+                var incident = DbContext.Incidents.SingleOrDefault(i => i.Id == incidentId);
+                if(incident != null)
+                {
+                    incident.Title = modifiedIncident.Title;
+                    incident.Description = modifiedIncident.Description;
+                    DbContext.Incidents.Update(incident);
+                    DbContext.SaveChanges();
+                    return Ok(incident);
+                }
+            }
+            return BadRequest();
+        }
+
         [HttpGet("/ServiceDesk/Incidents")]
         public IActionResult Incidents()
         {

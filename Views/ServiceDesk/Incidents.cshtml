@@ -76,7 +76,7 @@
             @foreach (var incident in Model)
             {
                 <tr>
-                    <td>@incident.Title</td>
+                    <td> <a class="volver-link" href="/ServiceDesk/Incidents/@incident.Id">@incident.Title</a> </td>
                     <td>@incident.Description</td>
                     <td>@incident.CreatedDate</td>
                 </tr>
