@@ -86,7 +86,7 @@ namespace ITIL.Controllers
             { 
                 DbContext.Problems.Remove(problem);
                 DbContext.SaveChanges();
-                return Ok();
+                return Ok($"Incident {problemId} deleted succesfuly");
             }
 
             return NotFound($"{problemId} not found");
