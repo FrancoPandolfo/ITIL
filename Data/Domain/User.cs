@@ -11,5 +11,6 @@ namespace ITIL.Data.Domain
         public string Password {get; set;}
 
         public virtual ICollection<Incident> Incidents {get; set;}
+        public virtual ICollection<Problem> Problems {get;set;}
     }
 }

@@ -5,16 +5,19 @@
     ViewData["Title"] = "ITIL";
     var incidentsUrl = string.Empty;
     var accountUrl = string.Empty;
+    var problemsUrl = string.Empty;
 
     if (WebHostEnvironment.IsDevelopment())
     {
         incidentsUrl = "https://localhost:5001/ServiceDesk/Incidents";
         accountUrl = "https://localhost:5001/Account";
+        problemsUrl = "https://localhost:5001/Problems";
     }
     else
     {
         incidentsUrl = "https://itilweb.onrender.com/ServiceDesk/Incidents";
         accountUrl = "https://itilweb.onrender.com/Account";
+        problemsUrl = "https://itilweb.onrender.com/Problems";
     }
 }
 
@@ -70,6 +73,7 @@
             <a class="logout" href="javascript:void(0);" onclick="logout()">Logout</a>
         </div>
         <a class="link" href="@incidentsUrl">Incidentes</a>
+        <a class="link" href="@problemsUrl">Problemas</a>
     }
     else
     {
@@ -77,6 +81,7 @@
             <a class="login" href="@accountUrl">Login</a>
         </div>
         <a class="link">Incidentes</a>
+        <a class="link">Problemas</a>
     }
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

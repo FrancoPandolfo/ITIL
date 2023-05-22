@@ -1,0 +1,93 @@
+@using ITIL.Data.Domain;
+@model IEnumerable<Problem>
+
+@{
+    ViewData["Title"] = "Problemas";
+}
+
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    .new-problem-button {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 16px;
+        text-decoration: none;
+        background-color: #3012a7;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .new-problem-button:hover {
+        background-color: #250a91;
+    }
+
+    .volver-link {
+        color: #000;
+        text-decoration: none;
+        font-size: 16px;
+    }
+
+    .user-links {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+    }
+</style>
+
+<h1>@ViewData["Title"]</h1>
+
+<a class="new-problem-button" href="/Problems/NewProblem">Nuevo Problema</a>
+
+<div class="user-links">
+    @if (User.Identity.IsAuthenticated)
+    {
+        <span>@User.Identity.Name</span>
+    }
+    <a class="volver-link" href="/Home/Index">Volver</a>
+</div>
+
+@if (Model.Any())
+{
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Created Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var problem in Model)
+            {
+                <tr>
+                    <td> <a class="volver-link" href="/Problems/@problem.Id">@problem.Title</a> </td>
+                    <td>@problem.Description</td>
+                    <td>@problem.CreatedDate</td>
+                </tr>
+                <tr>
+                    <td colspan="3"><hr></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No problems found.</p>
+}
