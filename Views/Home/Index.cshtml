@@ -62,19 +62,22 @@
 
 <h1>@ViewData["Title"]</h1>
 
-<div class="user-links">
+
     @if (User.Identity.IsAuthenticated)
     {
-        <span class="login">@User.Identity.Name</span>
-        <a class="logout" href="javascript:void(0);" onclick="logout()">Logout</a>
+        <div class="user-links">
+            <span class="login">@User.Identity.Name</span>
+            <a class="logout" href="javascript:void(0);" onclick="logout()">Logout</a>
+        </div>
+        <a class="link" href="@incidentsUrl">Incidentes</a>
     }
     else
     {
-        <a class="login" href="@accountUrl">Login</a>
+        <div class="user-links">
+            <a class="login" href="@accountUrl">Login</a>
+        </div>
+        <a class="link">Incidentes</a>
     }
-</div>
-
-<a class="link" href="@incidentsUrl">Incidentes</a>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
