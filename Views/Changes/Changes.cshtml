@@ -1,0 +1,142 @@
+@using ITIL.Data.Domain;
+@model IEnumerable<Change>
+
+@{
+    ViewData["Title"] = "Cambios";
+}
+
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    .new-change-button {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 16px;
+        text-decoration: none;
+        background-color: #3012a7;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .new-change-button:hover {
+        background-color: #250a91;
+    }
+
+    .volver-link {
+        color: #000;
+        text-decoration: none;
+        font-size: 16px;
+    }
+
+    .user-links {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+    }
+
+    .button-link {
+        display: inline-block;
+        padding: 5px 10px;
+        font-size: 12px;
+        text-decoration: none;
+        background-color: #3012a7;
+        color: white;
+        border: none;
+        border-radius: 1px;
+        cursor: pointer;
+    }
+
+    .button-link:hover {
+        background-color: #250a91;
+    }
+</style>
+
+<h1>@ViewData["Title"]</h1>
+
+<a class="new-change-button" href="/Changes/NewChange">Nuevo Cambio</a>
+
+<div class="user-links">
+    @if (User.Identity.IsAuthenticated)
+    {
+        <span>@User.Identity.Name</span>
+    }
+    <a class="volver-link" href="/Home/Index">Volver</a>
+</div>
+
+@if (Model.Any())
+{
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Created Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var change in Model)
+            {
+                <tr>
+                    <td>@change.Title</td>
+                    <td>@change.Description</td>
+                    <td>@change.CreatedDate</td>
+                    <td>
+                        <a href="/Changes/@change.Id" class="button-link">Edit</a>
+                        <button class="button-link" type="button" onclick="confirmDeleteChange(@change.Id)">Delete</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3"><hr></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No changes found.</p>
+}
+
+<script>
+    function confirmDeleteChange(changeId) {
+        if (confirm('Are you sure you want to delete this change?')) {
+            deleteChange(changeId);
+        }
+    }
+
+    function deleteChange(changeId) {
+        fetch('/Changes/DeleteChange', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(changeId)
+        })
+        .then(response => {
+            if (response.ok) {
+                // Refresh the change list or perform any other action
+                window.location.reload();
+            } else {
+                console.error('Error deleting change:', response.statusText);
+            }
+        })
+        .catch(error => {
+            console.error('Error deleting change:', error);
+        });
+    }
+</script>
