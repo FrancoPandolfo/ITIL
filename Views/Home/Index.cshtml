@@ -7,6 +7,7 @@
     var accountUrl = string.Empty;
     var problemsUrl = string.Empty;
     var changesUrl = string.Empty;
+    var configurationUrl = string.Empty;
 
     if (WebHostEnvironment.IsDevelopment())
     {
@@ -14,6 +15,7 @@
         accountUrl = "https://localhost:5001/Account";
         problemsUrl = "https://localhost:5001/Problems";
         changesUrl = "https://localhost:5001/Changes";
+        configurationUrl = "https://localhost:5001/Configuration/Items";
     }
     else
     {
@@ -21,6 +23,7 @@
         accountUrl = "https://itilweb.onrender.com/Account";
         problemsUrl = "https://itilweb.onrender.com/Problems";
         changesUrl = "https://itilweb.onrender.com/Changes";
+        configurationUrl = "https://itilweb.onrender.com/Configuration/Items";
     }
 }
 
@@ -78,6 +81,7 @@
         <a class="link" href="@incidentsUrl">Incidentes</a>
         <a class="link" href="@problemsUrl">Problemas</a>
         <a class="link" href="@changesUrl">Cambios</a>
+        <a class="link" href="@configurationUrl">Items de configuración</a>
     }
     else
     {
@@ -87,6 +91,7 @@
         <a class="link">Incidentes</a>
         <a class="link">Problemas</a>
         <a class="link">Cambios</a>
+        <a class="link">Items de configuración</a>
     }
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

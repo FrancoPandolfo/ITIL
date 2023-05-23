@@ -18645,6 +18645,16 @@
   "RootNamespace": "ITIL",
   "Documents": [
     {
+      "FilePath": "/home/fpandolfo/ITIL/Views/Configuration/Items.cshtml",
+      "TargetPath": "Views\\Configuration\\Items.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "/home/fpandolfo/ITIL/Views/Configuration/NewItem.cshtml",
+      "TargetPath": "Views\\Configuration\\NewItem.cshtml",
+      "FileKind": "mvc"
+    },
+    {
       "FilePath": "/home/fpandolfo/ITIL/Views/Changes/NewChange.cshtml",
       "TargetPath": "Views\\Changes\\NewChange.cshtml",
       "FileKind": "mvc"
@@ -18652,6 +18662,11 @@
     {
       "FilePath": "/home/fpandolfo/ITIL/Views/ServiceDesk/IncidentInfo.cshtml",
       "TargetPath": "Views\\ServiceDesk\\IncidentInfo.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "/home/fpandolfo/ITIL/Views/Configuration/ItemInfo.cshtml",
+      "TargetPath": "Views\\Configuration\\ItemInfo.cshtml",
       "FileKind": "mvc"
     },
     {
