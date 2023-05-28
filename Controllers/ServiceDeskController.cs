@@ -25,13 +25,16 @@ namespace ITIL.Controllers
             if (ModelState.IsValid)
             {
                 var user = DbContext.Users.SingleOrDefault(u => u.Id == incident.UserId);
+                var configurationItem = DbContext.Configuration.SingleOrDefault(c => c.Id == incident.ConfigurationItemId);
                 DbContext.Incidents.Add(new Incident()
                 {
                     Title = incident.Title,
                     Description = incident.Description,
                     CreatedDate = DateTime.UtcNow,
                     UserId = incident.UserId,
-                    User = user
+                    User = user,
+                    ConfigurationItemId = incident.ConfigurationItemId,
+                    ConfigurationItem = configurationItem
                 });
 
                 DbContext.SaveChanges();
@@ -72,6 +75,10 @@ namespace ITIL.Controllers
             var incident = DbContext.Incidents.SingleOrDefault(i => i.Id == incidentId);
             if(incident != null)
             {
+              var configurationItem = DbContext.Configuration.SingleOrDefault(c => c.Id == incident.ConfigurationItemId);
+              if(configurationItem != null) {
+                incident.ConfigurationItem = configurationItem;
+              }
               return View(incident);
             }
             return NotFound($"{incidentId} not found");
@@ -81,7 +88,8 @@ namespace ITIL.Controllers
         [HttpGet("/ServiceDesk/NewIncident")]
         public IActionResult NewIncident()
         {
-            return View();
+            var items = DbContext.Configuration;
+            return View(items);
         }
 
         [HttpPost("/ServiceDesk/DeleteIncident")]
