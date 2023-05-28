@@ -19,13 +19,16 @@ namespace ITIL.Controllers
             if (ModelState.IsValid)
             {
                 var user = DbContext.Users.SingleOrDefault(u => u.Id == change.UserId);
+                var configurationItem = DbContext.Configuration.SingleOrDefault(c => c.Id == change.ConfigurationItemId);
                 DbContext.Changes.Add(new Change()
                 {
                     Title = change.Title,
                     Description = change.Description,
                     CreatedDate = DateTime.UtcNow,
                     UserId = change.UserId,
-                    User = user
+                    User = user,
+                    ConfigurationItemId = change.ConfigurationItemId,
+                    ConfigurationItem = configurationItem
                 });
 
                 DbContext.SaveChanges();
@@ -66,6 +69,10 @@ namespace ITIL.Controllers
             var change = DbContext.Changes.SingleOrDefault(i => i.Id == changeId);
             if(change != null)
             {
+              var configurationItem = DbContext.Configuration.SingleOrDefault(c => c.Id == change.ConfigurationItemId);
+              if(configurationItem != null) {
+                change.ConfigurationItem = configurationItem;
+              }
               return View(change);
             }
             return NotFound($"{changeId} not found");
@@ -75,7 +82,8 @@ namespace ITIL.Controllers
         [HttpGet("/Changes/NewChange")]
         public IActionResult NewChange()
         {
-            return View();
+            var items = DbContext.Configuration;
+            return View(items);
         }
 
         [HttpPost("/Changes/DeleteChange")]

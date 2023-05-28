@@ -1,3 +1,6 @@
+@using ITIL.Data.Domain;
+@model IEnumerable<ConfigurationItem>
+
 <style>
     body {
         background-image: url("https://www.fair-computer.de/wp-content/uploads/adobestock_280046195.jpg");
@@ -106,6 +109,21 @@
         <label for="Title">Título</label>
         <input type="text" id="Title" name="Title" class="form-control" />
     </div>
+
+     @if (Model.Any())
+    {
+        <div class="form-group">
+            <label for="ConfigItem">Item afectado:</label>
+            <select name="ConfigItem" id="ConfigItem">
+                @foreach (var item in Model)
+                {
+                    <option value=@item.Id>@item.Title</option>
+                }
+            </select>
+        </div>
+
+    }
+
     <div class="form-group">
         <label for="Description">Descripción</label>
         <textarea id="Description" name="Description" class="form-control" rows="5"></textarea>
@@ -128,11 +146,13 @@
             localStorage.setItem("user-id", userId);
             var title = document.getElementById("Title").value;
             var description = document.getElementById("Description").value;
+            var itemId = document.getElementById("ConfigItem").value;
 
             var change = {
                 Title: title,
                 Description: description,
-                UserId: userId
+                UserId: userId,
+                ConfigurationItemId: itemId
             };
 
             // Include the userId in the request headers
