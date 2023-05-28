@@ -19,13 +19,16 @@ namespace ITIL.Controllers
             if (ModelState.IsValid)
             {
                 var user = DbContext.Users.SingleOrDefault(u => u.Id == problem.UserId);
+                var configurationItem = DbContext.Configuration.SingleOrDefault(c => c.Id == problem.ConfigurationItemId);
                 DbContext.Problems.Add(new Problem()
                 {
                     Title = problem.Title,
                     Description = problem.Description,
                     CreatedDate = DateTime.UtcNow,
                     UserId = problem.UserId,
-                    User = user
+                    User = user,
+                    ConfigurationItemId = problem.ConfigurationItemId,
+                    ConfigurationItem = configurationItem
                 });
 
                 DbContext.SaveChanges();
@@ -66,6 +69,10 @@ namespace ITIL.Controllers
             var problem = DbContext.Problems.SingleOrDefault(i => i.Id == problemId);
             if(problem != null)
             {
+              var configurationItem = DbContext.Configuration.SingleOrDefault(c => c.Id == problem.ConfigurationItemId);
+              if(configurationItem != null) {
+                problem.ConfigurationItem = configurationItem;
+              }
               return View(problem);
             }
             return NotFound($"{problemId} not found");
@@ -75,7 +82,8 @@ namespace ITIL.Controllers
         [HttpGet("/Problems/NewProblem")]
         public IActionResult NewProblem()
         {
-            return View();
+            var items = DbContext.Configuration;
+            return View(items);
         }
 
         [HttpPost("/Problems/DeleteProblem")]
