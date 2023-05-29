@@ -2,6 +2,7 @@ using ITIL.Data;
 using ITIL.Data.Domain;
 using ITIL.Model;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ITIL.Controllers
 { 
@@ -65,7 +66,7 @@ namespace ITIL.Controllers
         [HttpGet("/ServiceDesk/Incidents")]
         public IActionResult Incidents()
         {
-            var incidents = DbContext.Incidents.OrderByDescending(i => i.CreatedDate);
+            var incidents = DbContext.Incidents.Include(i => i.ConfigurationItem).OrderByDescending(i => i.CreatedDate);
             return View(incidents);
         }
 
@@ -106,5 +107,14 @@ namespace ITIL.Controllers
             return NotFound($"{incidentId} not found");
         }
 
+        [HttpGet("/ServiceDesk/Incident/{incidentId}/RelatedItems")]
+        public IActionResult GetRelatedItems(long incidentId)
+        {
+            var items = DbContext.Incidents.Include(i => i.ConfigurationItem).SingleOrDefault(i => i.Id == incidentId).ConfigurationItem;
+            if (items == null){
+                return NotFound($"item not found for incident {incidentId}");
+            }
+            return Ok(items);
+        }
     }
 }

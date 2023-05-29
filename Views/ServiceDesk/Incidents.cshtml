@@ -80,42 +80,43 @@
 
 @if (Model.Any())
 {
-<table>
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Related Item</th>
-            <th>Created Date</th>
-            <th>Actions</th>
-        </tr>
-        <tr>
-            <th><input type="text" id="filterTitle" onkeyup="filterTable('Title', this.value)" placeholder="Filter Title"></th>
-            <th><input type="text" id="filterDescription" onkeyup="filterTable('Description', this.value)" placeholder="Filter Description"></th>
-            <th><input type="text" id="filterRelatedItem" onkeyup="filterTable('RelatedItem', this.value)" placeholder="Filter Related Item"></th>
-            <th><input type="text" id="filterCreatedDate" onkeyup="filterTable('CreatedDate', this.value)" placeholder="Filter Created Date"></th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody id="incidentTableBody">
-        @foreach (var incident in Model)
-        {
+    <table>
+        <thead>
             <tr>
-                <td>@incident.Title</td>
-                <td>@incident.Description</td>
-                <td>@incident.ConfigurationItem?.Title</td>
-                <td>@incident.CreatedDate</td>
-                <td>
-                    <a href="/ServiceDesk/Incidents/@incident.Id" class="button-link">Edit</a>
-                    <button class="button-link" type="button" onclick="confirmDeleteIncident(@incident.Id)">Delete</button>
-                </td>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Related Item</th>
+                <th>Created Date</th>
+                <th>Actions</th>
             </tr>
             <tr>
-                <td colspan="5"><hr></td>
+                <th><input type="text" id="filterTitle" onkeyup="filterTable('Title', this.value)" placeholder="Filter Title"></th>
+                <th><input type="text" id="filterDescription" onkeyup="filterTable('Description', this.value)" placeholder="Filter Description"></th>
+                <th><input type="text" id="filterRelatedItem" onkeyup="filterTable('RelatedItem', this.value)" placeholder="Filter Related Item"></th>
+                <th><input type="text" id="filterCreatedDate" onkeyup="filterTable('CreatedDate', this.value)" placeholder="Filter Created Date"></th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody id="incidentTableBody">
+            @foreach (var incident in Model)
+            {
+                <tr>
+                    <td>@incident.Title</td>
+                    <td>@incident.Description</td>
+                    <td>@(incident.ConfigurationItem?.Title ?? "N/A")</td>
+                    <!-- <td id="relatedItemCell-@incident.Id">Loading...</td> -->
+                    <td>@incident.CreatedDate</td>
+                    <td>
+                        <a href="/ServiceDesk/Incidents/@incident.Id" class="button-link">Edit</a>
+                        <button class="button-link" type="button" onclick="confirmDeleteIncident(@incident.Id)">Delete</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="5"><hr></td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
 else
 {
@@ -176,5 +177,34 @@ else
             row.style.display = 'none';
             }
         }
+    }
+
+    //esta es una forma de traer los items mas ineficiente
+    //simplemente habia que agregar un include en el endpoint 
+    //de Incidents
+    var incidentIds = @Json.Serialize(Model.Select(i => i.Id));
+    incidentIds.forEach(fetchRelatedItem);
+
+    function fetchRelatedItem(incidentId) {
+        fetch(`/ServiceDesk/Incident/${incidentId}/RelatedItems`)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            })
+            .then(data => {
+                const relatedItemCell = document.getElementById(`relatedItemCell-${incidentId}`);
+                if (relatedItemCell) {
+                    relatedItemCell.textContent = data && data.title ? data.title : 'N/A';
+                }
+            })
+            .catch(error => {
+                const relatedItemCell = document.getElementById(`relatedItemCell-${incidentId}`);
+                if (relatedItemCell) {
+                    relatedItemCell.textContent = 'N/A';
+                }
+                console.error(`Error fetching related item for incident ${incidentId}:`, error);
+            });
     }
 </script>
