@@ -59,7 +59,7 @@ namespace ITIL.Controllers
         [HttpGet("/Changes")]
         public IActionResult Changes()
         {
-            var changes = DbContext.Changes;
+            var changes = DbContext.Changes.OrderByDescending(c => c.CreatedDate);
             return View(changes);
         }
 

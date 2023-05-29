@@ -65,7 +65,7 @@ namespace ITIL.Controllers
         [HttpGet("/ServiceDesk/Incidents")]
         public IActionResult Incidents()
         {
-            var incidents = DbContext.Incidents;
+            var incidents = DbContext.Incidents.OrderByDescending(i => i.CreatedDate);
             return View(incidents);
         }
 

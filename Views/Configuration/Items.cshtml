@@ -80,33 +80,39 @@
 
 @if (Model.Any())
 {
-    <table>
-        <thead>
+<table>
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Created Date</th>
+            <th>Actions</th>
+        </tr>
+        <tr>
+            <th><input type="text" id="filterItemTitle" onkeyup="filterTable('ItemTitle', this.value)" placeholder="Filter Title"></th>
+            <th><input type="text" id="filterItemDescription" onkeyup="filterTable('ItemDescription', this.value)" placeholder="Filter Description"></th>
+            <th><input type="text" id="filterItemCreatedDate" onkeyup="filterTable('ItemCreatedDate', this.value)" placeholder="Filter Created Date"></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody id="itemsTableBody">
+        @foreach (var item in Model)
+        {
             <tr>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Created Date</th>
-                <th>Actions</th>
+                <td>@item.Title</td>
+                <td>@item.Description</td>
+                <td>@item.CreatedDate</td>
+                <td>
+                    <a href="/Configuration/Items/@item.Id" class="button-link">Edit</a>
+                    <button class="button-link" type="button" onclick="confirmDeleteItem(@item.Id)">Delete</button>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.Title</td>
-                    <td>@item.Description</td>
-                    <td>@item.CreatedDate</td>
-                    <td>
-                        <a href="/Configuration/Items/@item.Id" class="button-link">Edit</a>
-                        <button class="button-link" type="button" onclick="confirmDeleteItem(@item.Id)">Delete</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="4"><hr></td>
-                </tr>
-            }
-        </tbody>
-    </table>
+            <tr>
+                <td colspan="4"><hr></td>
+            </tr>
+        }
+    </tbody>
+</table>
 }
 else
 {
@@ -139,6 +145,34 @@ else
         .catch(error => {
             console.error('Error deleting item:', error);
         });
+    }
+
+    function filterTable(column, value) {
+        var filterInput = value.toLowerCase();
+        var tableBody = document.getElementById('itemsTableBody');
+        var rows = tableBody.getElementsByTagName('tr');
+
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            var cells = row.getElementsByTagName('td');
+            var matched = false;
+
+            for (var j = 0; j < cells.length; j++) {
+            var cell = cells[j];
+            var cellValue = cell.textContent || cell.innerText;
+
+            if (cellValue.toLowerCase().indexOf(filterInput) > -1) {
+                matched = true;
+                break;
+            }
+            }
+
+            if (matched) {
+            row.style.display = '';
+            } else {
+            row.style.display = 'none';
+            }
+        }
     }
 </script>
 

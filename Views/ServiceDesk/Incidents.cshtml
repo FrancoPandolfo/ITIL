@@ -80,33 +80,42 @@
 
 @if (Model.Any())
 {
-    <table>
-        <thead>
+<table>
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Related Item</th>
+            <th>Created Date</th>
+            <th>Actions</th>
+        </tr>
+        <tr>
+            <th><input type="text" id="filterTitle" onkeyup="filterTable('Title', this.value)" placeholder="Filter Title"></th>
+            <th><input type="text" id="filterDescription" onkeyup="filterTable('Description', this.value)" placeholder="Filter Description"></th>
+            <th><input type="text" id="filterRelatedItem" onkeyup="filterTable('RelatedItem', this.value)" placeholder="Filter Related Item"></th>
+            <th><input type="text" id="filterCreatedDate" onkeyup="filterTable('CreatedDate', this.value)" placeholder="Filter Created Date"></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody id="incidentTableBody">
+        @foreach (var incident in Model)
+        {
             <tr>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Created Date</th>
-                <th>Actions</th>
+                <td>@incident.Title</td>
+                <td>@incident.Description</td>
+                <td>@incident.ConfigurationItem?.Title</td>
+                <td>@incident.CreatedDate</td>
+                <td>
+                    <a href="/ServiceDesk/Incidents/@incident.Id" class="button-link">Edit</a>
+                    <button class="button-link" type="button" onclick="confirmDeleteIncident(@incident.Id)">Delete</button>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var incident in Model)
-            {
-                <tr>
-                    <td>@incident.Title</td>
-                    <td>@incident.Description</td>
-                    <td>@incident.CreatedDate</td>
-                    <td>
-                        <a href="/ServiceDesk/Incidents/@incident.Id" class="button-link">Edit</a>
-                        <button class="button-link" type="button" onclick="confirmDeleteIncident(@incident.Id)">Delete</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="4"><hr></td>
-                </tr>
-            }
-        </tbody>
-    </table>
+            <tr>
+                <td colspan="5"><hr></td>
+            </tr>
+        }
+    </tbody>
+</table>
 }
 else
 {
@@ -140,10 +149,32 @@ else
             console.error('Error deleting incident:', error);
         });
     }
+
+    function filterTable(column, value) {
+        var filterInput = value.toLowerCase();
+        var tableBody = document.getElementById('incidentTableBody');
+        var rows = tableBody.getElementsByTagName('tr');
+
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            var cells = row.getElementsByTagName('td');
+            var matched = false;
+
+            for (var j = 0; j < cells.length; j++) {
+            var cell = cells[j];
+            var cellValue = cell.textContent || cell.innerText;
+
+            if (cellValue.toLowerCase().indexOf(filterInput) > -1) {
+                matched = true;
+                break;
+            }
+            }
+
+            if (matched) {
+            row.style.display = '';
+            } else {
+            row.style.display = 'none';
+            }
+        }
+    }
 </script>
-
-
-
-
-
-

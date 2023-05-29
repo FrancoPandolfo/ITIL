@@ -62,7 +62,7 @@ namespace ITIL.Controllers
         [HttpGet("/Configuration/Items")]
         public IActionResult Items()
         {
-            var items = DbContext.Configuration;
+            var items = DbContext.Configuration.OrderByDescending(i => i.CreatedDate);;
             return View(items);
         }
 

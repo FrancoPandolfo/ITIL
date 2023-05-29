@@ -80,32 +80,37 @@
 
 @if (Model.Any())
 {
-    <table>
-        <thead>
+<table>
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Created Date</th>
+        </tr>
+        <tr>
+            <th><input type="text" id="filterChangeTitle" onkeyup="filterTable('ChangeTitle', this.value)" placeholder="Filter Title"></th>
+            <th><input type="text" id="filterChangeDescription" onkeyup="filterTable('ChangeDescription', this.value)" placeholder="Filter Description"></th>
+            <th><input type="text" id="filterChangeCreatedDate" onkeyup="filterTable('ChangeCreatedDate', this.value)" placeholder="Filter Created Date"></th>
+        </tr>
+    </thead>
+    <tbody id="changesTableBody">
+        @foreach (var change in Model)
+        {
             <tr>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Created Date</th>
+                <td>@change.Title</td>
+                <td>@change.Description</td>
+                <td>@change.CreatedDate</td>
+                <td>
+                    <a href="/Changes/@change.Id" class="button-link">Edit</a>
+                    <button class="button-link" type="button" onclick="confirmDeleteChange(@change.Id)">Delete</button>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var change in Model)
-            {
-                <tr>
-                    <td>@change.Title</td>
-                    <td>@change.Description</td>
-                    <td>@change.CreatedDate</td>
-                    <td>
-                        <a href="/Changes/@change.Id" class="button-link">Edit</a>
-                        <button class="button-link" type="button" onclick="confirmDeleteChange(@change.Id)">Delete</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="3"><hr></td>
-                </tr>
-            }
-        </tbody>
-    </table>
+            <tr>
+                <td colspan="3"><hr></td>
+            </tr>
+        }
+    </tbody>
+</table>
 }
 else
 {
@@ -138,5 +143,33 @@ else
         .catch(error => {
             console.error('Error deleting change:', error);
         });
+    }
+
+    function filterTable(column, value) {
+        var filterInput = value.toLowerCase();
+        var tableBody = document.getElementById('changesTableBody');
+        var rows = tableBody.getElementsByTagName('tr');
+
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            var cells = row.getElementsByTagName('td');
+            var matched = false;
+
+            for (var j = 0; j < cells.length; j++) {
+            var cell = cells[j];
+            var cellValue = cell.textContent || cell.innerText;
+
+            if (cellValue.toLowerCase().indexOf(filterInput) > -1) {
+                matched = true;
+                break;
+            }
+            }
+
+            if (matched) {
+            row.style.display = '';
+            } else {
+            row.style.display = 'none';
+            }
+        }
     }
 </script>

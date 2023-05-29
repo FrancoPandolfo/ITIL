@@ -59,7 +59,7 @@ namespace ITIL.Controllers
         [HttpGet("/Problems")]
         public IActionResult Problems()
         {
-            var problems = DbContext.Problems;
+            var problems = DbContext.Problems.OrderByDescending(p => p.CreatedDate);
             return View(problems);
         }
 
