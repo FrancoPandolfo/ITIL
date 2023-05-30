@@ -9,5 +9,9 @@ namespace ITIL.Data.Domain
         public virtual User User {get; set;}
         public int? ConfigurationItemId {get; set;}
         public virtual ConfigurationItem ConfigurationItem {get; set;}
+        public int TrackingNumber {get;set;}
+        public DateTime ClosedDate {get;set;}
+        public DateTime LastUpdated {get;set;}
+        public string RootCause {get;set;}
     }
 }

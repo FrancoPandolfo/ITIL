@@ -85,15 +85,23 @@
             <tr>
                 <th>Title</th>
                 <th>Description</th>
+                <th>Tracking Number</th>
+                <th>Root Cause</th>
                 <th>Related Item</th>
                 <th>Created Date</th>
+                <th>Last Updated</th>
+                <th>Closed Date</th>
                 <th>Actions</th>
             </tr>
             <tr>
                 <th><input type="text" id="filterTitle" onkeyup="filterTable('Title', this.value)" placeholder="Filter Title"></th>
                 <th><input type="text" id="filterDescription" onkeyup="filterTable('Description', this.value)" placeholder="Filter Description"></th>
+                <th><input type="text" id="filterTrackingNumber" onkeyup="filterTable('TrackingNumber', this.value)" placeholder="Filter Tracking Number"></th>
+                <th><input type="text" id="filterRootCause" onkeyup="filterTable('RootCause', this.value)" placeholder="Filter Root Cause"></th>
                 <th><input type="text" id="filterRelatedItem" onkeyup="filterTable('RelatedItem', this.value)" placeholder="Filter Related Item"></th>
                 <th><input type="text" id="filterCreatedDate" onkeyup="filterTable('CreatedDate', this.value)" placeholder="Filter Created Date"></th>
+                <th><input type="text" id="filterLastUpdated" onkeyup="filterTable('LastUpdated', this.value)" placeholder="Filter LastUpdated"></th>
+                <th><input type="text" id="filterClosedDate" onkeyup="filterTable('ClosedDate', this.value)" placeholder="Filter Closed Date"></th>
                 <th></th>
             </tr>
         </thead>
@@ -103,16 +111,20 @@
                 <tr>
                     <td>@incident.Title</td>
                     <td>@incident.Description</td>
+                    <td>@incident.TrackingNumber</td>
+                    <td>@incident.RootCause</td>
                     <td>@(incident.ConfigurationItem?.Title ?? "N/A")</td>
                     <!-- <td id="relatedItemCell-@incident.Id">Loading...</td> -->
                     <td>@incident.CreatedDate</td>
+                    <td>@incident.LastUpdated</td>
+                     <td>@incident.ClosedDate</td>
                     <td>
                         <a href="/ServiceDesk/Incidents/@incident.Id" class="button-link">Edit</a>
                         <button class="button-link" type="button" onclick="confirmDeleteIncident(@incident.Id)">Delete</button>
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="5"><hr></td>
+                    <td colspan="9"><hr></td>
                 </tr>
             }
         </tbody>

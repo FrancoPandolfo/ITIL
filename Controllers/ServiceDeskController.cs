@@ -35,7 +35,9 @@ namespace ITIL.Controllers
                     UserId = incident.UserId,
                     User = user,
                     ConfigurationItemId = incident.ConfigurationItemId,
-                    ConfigurationItem = configurationItem
+                    ConfigurationItem = configurationItem,
+                    TrackingNumber = incident.TrackingNumber,
+                    RootCause = incident.RootCause
                 });
 
                 DbContext.SaveChanges();
@@ -55,6 +57,7 @@ namespace ITIL.Controllers
                 {
                     incident.Title = modifiedIncident.Title;
                     incident.Description = modifiedIncident.Description;
+                    incident.LastUpdated = DateTime.UtcNow;
                     DbContext.Incidents.Update(incident);
                     DbContext.SaveChanges();
                     return Ok(incident);
