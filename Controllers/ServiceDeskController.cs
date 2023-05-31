@@ -37,7 +37,9 @@ namespace ITIL.Controllers
                     ConfigurationItemId = incident.ConfigurationItemId,
                     ConfigurationItem = configurationItem,
                     TrackingNumber = incident.TrackingNumber,
-                    RootCause = incident.RootCause
+                    RootCause = incident.RootCause,
+                    ClientName = incident.ClientName,
+                    ClientEmail = incident.ClientEmail
                 });
 
                 DbContext.SaveChanges();
@@ -69,14 +71,17 @@ namespace ITIL.Controllers
         [HttpGet("/ServiceDesk/Incidents")]
         public IActionResult Incidents()
         {
-            var incidents = DbContext.Incidents.Include(i => i.ConfigurationItem).OrderByDescending(i => i.CreatedDate);
+            var incidents = DbContext.Incidents
+            .Include(i => i.ConfigurationItem)
+            .OrderByDescending(i => i.CreatedDate);
             return View(incidents);
         }
 
         [HttpGet("/ServiceDesk/Incidents/{incidentId}")]
         public IActionResult IncidentInfo(long incidentId)
         {
-            var incident = DbContext.Incidents.SingleOrDefault(i => i.Id == incidentId);
+            var incident = DbContext.Incidents
+            .SingleOrDefault(i => i.Id == incidentId);
             if(incident != null)
             {
               var configurationItem = DbContext.Configuration.SingleOrDefault(c => c.Id == incident.ConfigurationItemId);

@@ -9,5 +9,7 @@ namespace ITIL.Data.Domain
         public virtual User User {get; set;}
         public int? ConfigurationItemId {get; set;}
         public virtual ConfigurationItem ConfigurationItem {get; set;}
+        public string ClientName {get;set;}
+        public string ClientEmail {get;set;}
     }
 }

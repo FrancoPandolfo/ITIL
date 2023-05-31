@@ -128,6 +128,16 @@
         <label for="Description">Descripción</label>
         <textarea id="Description" name="Description" class="form-control" rows="5"></textarea>
     </div>
+
+    <div class="form-group">
+        <label for="ClientName">Nombre del Cliente</label>
+        <input type="text" id="ClientName" name="ClientName" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label for="ClientEmail">Email del Cliente</label>
+        <input type="text" id="ClientEmail" name="ClientEmail" class="form-control" />
+    </div>
     <button type="submit" class="new-change-button login-effect">
         Crear
         <img class="login-spinner" src="https://icon-library.com/images/waiting-icon-gif/waiting-icon-gif-7.jpg" alt="Loading..." />
@@ -147,12 +157,16 @@
             var title = document.getElementById("Title").value;
             var description = document.getElementById("Description").value;
             var itemId = document.getElementById("ConfigItem").value;
+            var clientName = document.getElementById("ClientName").value;
+            var clientEmail = document.getElementById("ClientEmail").value;
 
             var change = {
                 Title: title,
                 Description: description,
                 UserId: userId,
-                ConfigurationItemId: itemId
+                ConfigurationItemId: itemId,
+                ClientName: clientName,
+                ClientEmail: clientEmail
             };
 
             // Include the userId in the request headers

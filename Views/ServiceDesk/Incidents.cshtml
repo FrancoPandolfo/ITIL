@@ -88,6 +88,8 @@
                 <th>Tracking Number</th>
                 <th>Root Cause</th>
                 <th>Related Item</th>
+                <th>Client Name</th>
+                <th>Client Email</th>
                 <th>Created Date</th>
                 <th>Last Updated</th>
                 <th>Closed Date</th>
@@ -99,6 +101,8 @@
                 <th><input type="text" id="filterTrackingNumber" onkeyup="filterTable('TrackingNumber', this.value)" placeholder="Filter Tracking Number"></th>
                 <th><input type="text" id="filterRootCause" onkeyup="filterTable('RootCause', this.value)" placeholder="Filter Root Cause"></th>
                 <th><input type="text" id="filterRelatedItem" onkeyup="filterTable('RelatedItem', this.value)" placeholder="Filter Related Item"></th>
+                <th><input type="text" id="filterClientName" onkeyup="filterTable('ClientName', this.value)" placeholder="Filter Client Name"></th>
+                <th><input type="text" id="filterClientEmail" onkeyup="filterTable('ClientEmail', this.value)" placeholder="Filter Client Email"></th>
                 <th><input type="text" id="filterCreatedDate" onkeyup="filterTable('CreatedDate', this.value)" placeholder="Filter Created Date"></th>
                 <th><input type="text" id="filterLastUpdated" onkeyup="filterTable('LastUpdated', this.value)" placeholder="Filter LastUpdated"></th>
                 <th><input type="text" id="filterClosedDate" onkeyup="filterTable('ClosedDate', this.value)" placeholder="Filter Closed Date"></th>
@@ -115,6 +119,8 @@
                     <td>@incident.RootCause</td>
                     <td>@(incident.ConfigurationItem?.Title ?? "N/A")</td>
                     <!-- <td id="relatedItemCell-@incident.Id">Loading...</td> -->
+                    <td>@incident.ClientName</td>
+                    <td>@incident.ClientEmail</td>
                     <td>@incident.CreatedDate</td>
                     <td>@incident.LastUpdated</td>
                      <td>@incident.ClosedDate</td>
@@ -124,7 +130,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="9"><hr></td>
+                    <td colspan="11"><hr></td>
                 </tr>
             }
         </tbody>

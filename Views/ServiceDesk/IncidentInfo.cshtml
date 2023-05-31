@@ -129,6 +129,16 @@
         <label for="Description">Descripción</label>
         <textarea id="Description" name="Description" class="form-control" rows="5">@Model.Description</textarea>
     </div>
+
+    <div class="form-group">
+        <label for="ClientName">Nombre del Cliente</label>
+        <input type="text" id="ClientName" name="ClientName" class="form-control" value="@Model.ClientName" />
+    </div>
+
+    <div class="form-group">
+        <label for="ClientEmail">Email del Cliente</label>
+        <input type="text" id="ClientEmail" name="ClientEmail" class="form-control" value="@Model.ClientEmail" />
+    </div>
     
     <div class="form-group">
         <label for="TrackingNumber">Número de seguimiento</label>
@@ -160,12 +170,16 @@
             var description = document.getElementById("Description").value;
             var trackingNumber = document.getElementById("TrackingNumber").value;
             var rootCause = document.getElementById("RootCause").value;
+            var clientName = document.getElementById("ClientName").value;
+            var clientEmail = document.getElementById("ClientEmail").value;
 
             var incident = {
                 Title: title,
                 Description: description,
                 TrackingNumber: trackingNumber,
-                RootCause: rootCause
+                RootCause: rootCause,
+                ClientName: clientName,
+                ClientEmail: clientEmail
             };
 
             // Include the userId in the request headers

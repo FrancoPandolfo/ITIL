@@ -2,6 +2,7 @@ using ITIL.Data;
 using ITIL.Data.Domain;
 using ITIL.Model;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ITIL.Controllers
 {
@@ -28,7 +29,9 @@ namespace ITIL.Controllers
                     UserId = change.UserId,
                     User = user,
                     ConfigurationItemId = change.ConfigurationItemId,
-                    ConfigurationItem = configurationItem
+                    ConfigurationItem = configurationItem,
+                    ClientName = change.ClientName,
+                    ClientEmail = change.ClientEmail
                 });
 
                 DbContext.SaveChanges();
@@ -59,14 +62,16 @@ namespace ITIL.Controllers
         [HttpGet("/Changes")]
         public IActionResult Changes()
         {
-            var changes = DbContext.Changes.OrderByDescending(c => c.CreatedDate);
+            var changes = DbContext.Changes
+            .OrderByDescending(c => c.CreatedDate);
             return View(changes);
         }
 
         [HttpGet("/Changes/{changeId}")]
         public IActionResult ChangeInfo(long changeId)
         {
-            var change = DbContext.Changes.SingleOrDefault(i => i.Id == changeId);
+            var change = DbContext.Changes
+            .SingleOrDefault(i => i.Id == changeId);
             if(change != null)
             {
               var configurationItem = DbContext.Configuration.SingleOrDefault(c => c.Id == change.ConfigurationItemId);

@@ -8,5 +8,7 @@ namespace ITIL.Model
         public int ConfigurationItemId { get; set; }
         public int TrackingNumber {get;set;}
         public string RootCause {get;set;}
+        public string ClientName {get;set;}
+        public string ClientEmail {get;set;}
     }
 }
