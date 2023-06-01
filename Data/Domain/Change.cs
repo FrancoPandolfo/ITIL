@@ -11,5 +11,6 @@ namespace ITIL.Data.Domain
         public virtual ConfigurationItem ConfigurationItem {get; set;}
         public string ClientName {get;set;}
         public string ClientEmail {get;set;}
+        public string State {get;set;}
     }
 }

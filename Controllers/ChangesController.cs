@@ -2,7 +2,6 @@ using ITIL.Data;
 using ITIL.Data.Domain;
 using ITIL.Model;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ITIL.Controllers
 {
@@ -31,7 +30,8 @@ namespace ITIL.Controllers
                     ConfigurationItemId = change.ConfigurationItemId,
                     ConfigurationItem = configurationItem,
                     ClientName = change.ClientName,
-                    ClientEmail = change.ClientEmail
+                    ClientEmail = change.ClientEmail,
+                    State = State.ABIERTO
                 });
 
                 DbContext.SaveChanges();
@@ -51,6 +51,7 @@ namespace ITIL.Controllers
                 {
                     change.Title = modifiedChange.Title;
                     change.Description = modifiedChange.Description;
+                    change.State = modifiedChange.State;
                     DbContext.Changes.Update(change);
                     DbContext.SaveChanges();
                     return Ok(change);

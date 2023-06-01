@@ -15,5 +15,6 @@ namespace ITIL.Data.Domain
         public string RootCause {get;set;}
         public string ClientName {get;set;}
         public string ClientEmail {get;set;}
+        public string State {get;set;}
     }
 }

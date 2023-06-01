@@ -135,6 +135,16 @@
         <label for="ClientEmail">Email del Cliente</label>
         <input type="text" id="ClientEmail" name="ClientEmail" class="form-control" value="@Model.ClientEmail" />
     </div>
+        <div class="form-group">
+        <label for="State">Estado</label>
+        <select id="State" name="State" class="form-control">
+            <option value="ABIERTO" @if (Model.State == State.ABIERTO) { <text>selected</text> }>ABIERTO</option>
+            <option value="EN CURSO" @if (Model.State == State.EN_CURSO) { <text>selected</text> }>EN CURSO</option>
+            <option value="ACEPTADO" @if (Model.State == State.ACEPTADO) { <text>selected</text> }>ACEPTADO</option>
+            <option value="IMPLEMENTADO" @if (Model.State == State.IMPLEMENTADO) { <text>selected</text> }>IMPLEMENTADO</option>
+            <option value="RECHAZADO" @if (Model.State == State.RECHAZADO) { <text>selected</text> }>RECHAZADO</option>
+        </select>
+    </div>
     <button type="submit" class="new-change-button login-effect">
         Guardar cambios
         <img class="login-spinner" src="https://icon-library.com/images/waiting-icon-gif/waiting-icon-gif-7.jpg" alt="Loading..." />
@@ -155,12 +165,14 @@
             var description = document.getElementById("Description").value;
             var clientName = document.getElementById("ClientName").value;
             var clientEmail = document.getElementById("ClientEmail").value;
+            var state = document.getElementById("State").value;
 
             var change = {
                 Title: title,
                 Description: description,
                 ClientName: clientName,
-                ClientEmail: clientEmail
+                ClientEmail: clientEmail,
+                State: state
             };
 
             // Include the userId in the request headers

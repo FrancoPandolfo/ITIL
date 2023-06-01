@@ -39,7 +39,8 @@ namespace ITIL.Controllers
                     TrackingNumber = incident.TrackingNumber,
                     RootCause = incident.RootCause,
                     ClientName = incident.ClientName,
-                    ClientEmail = incident.ClientEmail
+                    ClientEmail = incident.ClientEmail,
+                    State = State.ABIERTO
                 });
 
                 DbContext.SaveChanges();
@@ -59,6 +60,7 @@ namespace ITIL.Controllers
                 {
                     incident.Title = modifiedIncident.Title;
                     incident.Description = modifiedIncident.Description;
+                    incident.State = modifiedIncident.State;
                     incident.LastUpdated = DateTime.UtcNow;
                     DbContext.Incidents.Update(incident);
                     DbContext.SaveChanges();
