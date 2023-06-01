@@ -25,5 +25,10 @@ namespace ITIL.Data.Domain
         public virtual User AssignedUser {get;set;}
         public string Impact {get;set;}
         public string Priority {get;set;}
+        public List<string> Comments {get;set;}
+
+        public Incident(){
+            Comments = new List<string>();
+        }
     }
 }

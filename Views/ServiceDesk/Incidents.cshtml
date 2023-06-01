@@ -64,6 +64,42 @@
     .button-link:hover {
         background-color: #250a91;
     }
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 10% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 600px;
+    }
+
+    .close {
+        color: #888;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
 </style>
 
 <h1>@ViewData["Title"]</h1>
@@ -127,7 +163,6 @@
                     <td>@incident.TrackingNumber</td>
                     <td>@incident.RootCause</td>
                     <td>@(incident.ConfigurationItem?.Title ?? "N/A")</td>
-                    <!-- <td id="relatedItemCell-@incident.Id">Loading...</td> -->
                     <td>@incident.ClientName</td>
                     <td>@incident.ClientEmail</td>
                     <td>@incident.State</td>
@@ -139,6 +174,7 @@
                     <td>
                         <a href="/ServiceDesk/Incidents/@incident.Id" class="button-link">Edit</a>
                         <button class="button-link" type="button" onclick="confirmDeleteIncident(@incident.Id)">Delete</button>
+                        <button class="button-link" type="button" onclick="showCommentModal(@incident.Id)">Add Comment</button>
                     </td>
                 </tr>
                 <tr>
@@ -147,6 +183,14 @@
             }
         </tbody>
     </table>
+
+    <div id="commentModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <textarea id="commentInput" placeholder="Enter your comment"></textarea>
+            <button id="saveCommentButton" onclick="saveComment()">Save Comment</button>
+        </div>
+    </div>
 }
 else
 {
@@ -209,9 +253,70 @@ else
         }
     }
 
+    var currentIncidentId;
+
+    // Get the modal element
+    var modal = document.getElementById("commentModal");
+
+    // Get the <span> element that closes the modal
+    var closeBtn = modal.querySelector(".close");
+
+    // Function to show the modal
+    function showCommentModal(incidentId) {
+        currentIncidentId = incidentId;
+        modal.style.display = "block";
+    }
+
+    // Function to close the modal
+    function closeModal() {
+        modal.style.display = "none";
+    }
+
+    // Close the modal if the user clicks on the close button (X)
+    closeBtn.onclick = function() {
+        closeModal();
+    };
+
+    // Close the modal if the user clicks outside of it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            closeModal();
+        }
+    };
+
+    // Function to save the comment
+    function saveComment() {
+        var comment = document.getElementById("commentInput").value;
+
+        // Make the HTTP POST request to save the comment
+        fetch(`/ServiceDesk/Incidents/${currentIncidentId}/Comments/SaveComment`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(comment)
+        })
+        .then(function(response) {
+            if (response.ok) {
+                // Comment saved successfully, update the UI or take any other necessary action
+                console.log("Comment saved successfully");
+            } else {
+                console.error("Failed to save the comment");
+            }
+        })
+        .catch(function() {
+            console.error("Failed to save the comment");
+        });
+
+        // Close the modal and reset the input
+        closeModal();
+        document.getElementById("commentInput").value = "";
+    }
+
     //esta es una forma de traer los items mas ineficiente
     //simplemente habia que agregar un include en el endpoint 
     //de Incidents
+    //<td id="relatedItemCell-"arroba"incident.Id">Loading...</td> 
     var incidentIds = @Json.Serialize(Model.Select(i => i.Id));
     incidentIds.forEach(fetchRelatedItem);
 

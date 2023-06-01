@@ -141,5 +141,52 @@ namespace ITIL.Controllers
             }
             return Ok(items);
         }
+
+        [HttpPost("/ServiceDesk/Incidents/{incidentId}/Comments/SaveComment")]
+        public IActionResult SaveComment(long incidentId, [FromBody] string comment)
+        {
+            var incident = DbContext.Incidents.SingleOrDefault(i => i.Id == incidentId);
+            if (incident == null)
+            {
+                return NotFound();
+            }
+            incident.Comments.Add(comment);
+
+            DbContext.SaveChanges();
+
+            return Ok(comment);
+        }
+
+        [HttpGet("/ServiceDesk/Incidents/{incidentId}/Comments")]
+        public IActionResult Comments(long incidentId, [FromBody] string comment)
+        {
+            var incident = DbContext.Incidents.SingleOrDefault(i => i.Id == incidentId);
+            if (incident == null)
+            {
+                return NotFound();
+            }
+            return Ok(incident.Comments);
+        }
+
+        [HttpDelete("/ServiceDesk/Incidents/{incidentId}/Comments/{commentIndex}")]
+        public IActionResult DeleteComment(long incidentId, int commentIndex)
+        {
+            var incident = DbContext.Incidents.SingleOrDefault(i => i.Id == incidentId);
+            if (incident == null)
+            {
+                return NotFound();
+            }
+
+            if (commentIndex < 0 || commentIndex >= incident.Comments.Count)
+            {
+                return NotFound();
+            }
+
+            incident.Comments.RemoveAt(commentIndex);
+
+            DbContext.SaveChanges();
+
+            return NoContent();
+        }
     }
 }
