@@ -85,6 +85,7 @@
         <tr>
             <th>Title</th>
             <th>Description</th>
+            <th>Assigned To</th>
             <th>Client Name</th>
             <th>Client Email</th>
             <th>State</th>
@@ -93,6 +94,7 @@
         <tr>
             <th><input type="text" id="filterChangeTitle" onkeyup="filterTable('ChangeTitle', this.value)" placeholder="Filter Title"></th>
             <th><input type="text" id="filterChangeDescription" onkeyup="filterTable('ChangeDescription', this.value)" placeholder="Filter Description"></th>
+            <th><input type="text" id="filterChangeAssignedTo" onkeyup="filterTable('ChangeAssignedTo', this.value)" placeholder="Filter Assigned To"></th>
             <th><input type="text" id="filterChaneClientName" onkeyup="filterTable('ChangeClientName', this.value)" placeholder="Filter Client Name"></th>
             <th><input type="text" id="filterChangeClientEmail" onkeyup="filterTable('ChangeClientEmail', this.value)" placeholder="Filter Client Email"></th>
             <th><input type="text" id="filterChangeState" onkeyup="filterTable('ChangeState', this.value)" placeholder="Filter State"></th>
@@ -105,6 +107,7 @@
             <tr>
                 <td>@change.Title</td>
                 <td>@change.Description</td>
+                <td>@change.AssignedUser.Email</td>
                 <td>@change.ClientName</td>
                 <td>@change.ClientEmail</td>
                 <td>@change.State</td>

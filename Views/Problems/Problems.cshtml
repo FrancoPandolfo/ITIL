@@ -85,11 +85,13 @@
         <tr>
             <th>Title</th>
             <th>Description</th>
+            <th>Assigned To</th>
             <th>Created Date</th>
         </tr>
         <tr>
             <th><input type="text" id="filterProblemTitle" onkeyup="filterTable('ProblemTitle', this.value)" placeholder="Filter Title"></th>
             <th><input type="text" id="filterProblemDescription" onkeyup="filterTable('ProblemDescription', this.value)" placeholder="Filter Description"></th>
+            <th><input type="text" id="filterProblemAssignedTo" onkeyup="filterTable('ProblemAssignedTo', this.value)" placeholder="Filter Assigned To"></th>
             <th><input type="text" id="filterProblemCreatedDate" onkeyup="filterTable('ProblemCreatedDate', this.value)" placeholder="Filter Created Date"></th>
         </tr>
     </thead>
@@ -99,6 +101,7 @@
             <tr>
                 <td>@problem.Title</td>
                 <td>@problem.Description</td>
+                <td>@problem.AssignedUser.Email</td>
                 <td>@problem.CreatedDate</td>
                 <td>
                     <a href="/Problems/@problem.Id" class="button-link">Edit</a>

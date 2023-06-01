@@ -1,18 +1,34 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ITIL.Data.Domain
 {
     public class User : EntityBase
     {
         [StringLength(100)]
-        public string Email {get; set;}
+        public string Email { get; set; }
 
         [StringLength(100)]
-        public string Password {get; set;}
+        public string Password { get; set; }
 
-        public virtual ICollection<Incident> Incidents {get; set;}
-        public virtual ICollection<Problem> Problems {get;set;}
-        public virtual ICollection<Change> Changes {get;set;}
-        public virtual ICollection<ConfigurationItem> Items {get;set;}
+        [InverseProperty("User")]
+        public virtual ICollection<Incident> Incidents { get; set; }
+
+        [InverseProperty("AssignedUser")]
+        public virtual ICollection<Incident> AssignedIncidents { get; set; }
+
+        [InverseProperty("User")]
+        public virtual ICollection<Problem> Problems { get; set; }
+
+        [InverseProperty("AssignedUser")]
+        public virtual ICollection<Problem> AssignedProblems { get; set; }
+
+        [InverseProperty("User")]
+        public virtual ICollection<Change> Changes { get; set; }
+
+        [InverseProperty("AssignedUser")]
+        public virtual ICollection<Change> AssignedChanges { get; set; }
+
+        public virtual ICollection<ConfigurationItem> Items { get; set; }
     }
 }

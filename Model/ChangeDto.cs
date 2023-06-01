@@ -9,5 +9,6 @@ namespace ITIL.Model
         public string ClientName {get;set;}
         public string ClientEmail {get;set;}
         public string? State {get;set;}
+        public int AssignedUserId {get;set;}
     }
 }

@@ -128,6 +128,15 @@
         <textarea id="Description" name="Description" class="form-control" rows="5">@Model.Description</textarea>
     </div>
     <div class="form-group">
+        <label for="AssignedUser">Asignar a:</label>
+        <select name="AssignedUser" id="AssignedUser">
+            @foreach (var user in (IEnumerable<User>)ViewBag.Users)
+            {
+                <option value="@user.Id" @(user.Id == Model.AssignedUser?.Id ? "selected" : "")>@user.Email</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
         <label for="ClientName">Nombre del Cliente</label>
         <input type="text" id="ClientName" name="ClientName" class="form-control" value="@Model.ClientName" />
     </div>
@@ -166,13 +175,15 @@
             var clientName = document.getElementById("ClientName").value;
             var clientEmail = document.getElementById("ClientEmail").value;
             var state = document.getElementById("State").value;
+            var assignedUserId = document.getElementById("AssignedUser").value;
 
             var change = {
                 Title: title,
                 Description: description,
                 ClientName: clientName,
                 ClientEmail: clientEmail,
-                State: state
+                State: state,
+                AssignedUserId: assignedUserId
             };
 
             // Include the userId in the request headers

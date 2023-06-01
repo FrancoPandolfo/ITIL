@@ -85,6 +85,7 @@
             <tr>
                 <th>Title</th>
                 <th>Description</th>
+                <th>Assigned To</th>
                 <th>Tracking Number</th>
                 <th>Root Cause</th>
                 <th>Related Item</th>
@@ -99,6 +100,7 @@
             <tr>
                 <th><input type="text" id="filterTitle" onkeyup="filterTable('Title', this.value)" placeholder="Filter Title"></th>
                 <th><input type="text" id="filterDescription" onkeyup="filterTable('Description', this.value)" placeholder="Filter Description"></th>
+                <th><input type="text" id="filterAssignedTo" onkeyup="filterTable('AssignedTo', this.value)" placeholder="Filter Assigned To"></th>
                 <th><input type="text" id="filterTrackingNumber" onkeyup="filterTable('TrackingNumber', this.value)" placeholder="Filter Tracking Number"></th>
                 <th><input type="text" id="filterRootCause" onkeyup="filterTable('RootCause', this.value)" placeholder="Filter Root Cause"></th>
                 <th><input type="text" id="filterRelatedItem" onkeyup="filterTable('RelatedItem', this.value)" placeholder="Filter Related Item"></th>
@@ -117,6 +119,7 @@
                 <tr>
                     <td>@incident.Title</td>
                     <td>@incident.Description</td>
+                    <td>@incident.AssignedUser.Email</td>
                     <td>@incident.TrackingNumber</td>
                     <td>@incident.RootCause</td>
                     <td>@(incident.ConfigurationItem?.Title ?? "N/A")</td>

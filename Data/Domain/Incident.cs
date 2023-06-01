@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace ITIL.Data.Domain 
 {
     public class Incident : EntityBase
@@ -6,8 +8,10 @@ namespace ITIL.Data.Domain
         public string Description { get; set; }
         public DateTime CreatedDate { get; set; }
         public int UserId { get; set; }
+        [ForeignKey("UserId")]
         public virtual User User {get; set;}
         public int? ConfigurationItemId {get; set;}
+        [ForeignKey("ConfigurationItemId")]
         public virtual ConfigurationItem ConfigurationItem {get; set;}
         public int TrackingNumber {get;set;}
         public DateTime ClosedDate {get;set;}
@@ -16,5 +20,8 @@ namespace ITIL.Data.Domain
         public string ClientName {get;set;}
         public string ClientEmail {get;set;}
         public string State {get;set;}
+        public int AssignedUserId {get;set;}
+        [ForeignKey("AssignedUserId")]
+        public virtual User AssignedUser {get;set;}
     }
 }

@@ -27,6 +27,7 @@ namespace ITIL.Controllers
             {
                 var user = DbContext.Users.SingleOrDefault(u => u.Id == incident.UserId);
                 var configurationItem = DbContext.Configuration.SingleOrDefault(c => c.Id == incident.ConfigurationItemId);
+                var assignedUser = DbContext.Users.SingleOrDefault(u => u.Id == incident.AssignedUserId);
                 DbContext.Incidents.Add(new Incident()
                 {
                     Title = incident.Title,
@@ -40,7 +41,9 @@ namespace ITIL.Controllers
                     RootCause = incident.RootCause,
                     ClientName = incident.ClientName,
                     ClientEmail = incident.ClientEmail,
-                    State = State.ABIERTO
+                    State = State.ABIERTO,
+                    AssignedUserId = incident.AssignedUserId,
+                    AssignedUser = assignedUser,
                 });
 
                 DbContext.SaveChanges();
@@ -55,12 +58,15 @@ namespace ITIL.Controllers
         {
             if (ModelState.IsValid)
             {
-                var incident = DbContext.Incidents.SingleOrDefault(i => i.Id == incidentId);
+                var incident = DbContext.Incidents.Include(i => i.AssignedUser).SingleOrDefault(i => i.Id == incidentId);
+                var assignedUser = DbContext.Users.SingleOrDefault(u => u.Id == modifiedIncident.AssignedUserId);
                 if(incident != null)
                 {
                     incident.Title = modifiedIncident.Title;
                     incident.Description = modifiedIncident.Description;
                     incident.State = modifiedIncident.State;
+                    incident.AssignedUserId = modifiedIncident.AssignedUserId;
+                    incident.AssignedUser = assignedUser;
                     incident.LastUpdated = DateTime.UtcNow;
                     DbContext.Incidents.Update(incident);
                     DbContext.SaveChanges();
@@ -75,6 +81,7 @@ namespace ITIL.Controllers
         {
             var incidents = DbContext.Incidents
             .Include(i => i.ConfigurationItem)
+            .Include(i => i.AssignedUser)
             .OrderByDescending(i => i.CreatedDate);
             return View(incidents);
         }
@@ -90,6 +97,7 @@ namespace ITIL.Controllers
               if(configurationItem != null) {
                 incident.ConfigurationItem = configurationItem;
               }
+              ViewBag.Users = DbContext.Users;
               return View(incident);
             }
             return NotFound($"{incidentId} not found");
@@ -100,6 +108,7 @@ namespace ITIL.Controllers
         public IActionResult NewIncident()
         {
             var items = DbContext.Configuration;
+            ViewBag.Users = DbContext.Users;
             return View(items);
         }
 

@@ -2,6 +2,7 @@ using ITIL.Data;
 using ITIL.Data.Domain;
 using ITIL.Model;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ITIL.Controllers
 {
@@ -20,6 +21,7 @@ namespace ITIL.Controllers
             {
                 var user = DbContext.Users.SingleOrDefault(u => u.Id == problem.UserId);
                 var configurationItem = DbContext.Configuration.SingleOrDefault(c => c.Id == problem.ConfigurationItemId);
+                var assignedUser = DbContext.Users.SingleOrDefault(u => u.Id == problem.AssignedUserId);
                 DbContext.Problems.Add(new Problem()
                 {
                     Title = problem.Title,
@@ -28,7 +30,9 @@ namespace ITIL.Controllers
                     UserId = problem.UserId,
                     User = user,
                     ConfigurationItemId = problem.ConfigurationItemId,
-                    ConfigurationItem = configurationItem
+                    ConfigurationItem = configurationItem,
+                    AssignedUserId = problem.AssignedUserId,
+                    AssignedUser = assignedUser,
                 });
 
                 DbContext.SaveChanges();
@@ -43,11 +47,14 @@ namespace ITIL.Controllers
         {
             if (ModelState.IsValid)
             {
-                var problem = DbContext.Problems.SingleOrDefault(i => i.Id == problemId);
+                var problem = DbContext.Problems.Include(i => i.AssignedUser).SingleOrDefault(i => i.Id == problemId);
+                var assignedUser = DbContext.Users.SingleOrDefault(u => u.Id == modifiedProblem.AssignedUserId);
                 if(problem != null)
                 {
                     problem.Title = modifiedProblem.Title;
                     problem.Description = modifiedProblem.Description;
+                    problem.AssignedUserId = modifiedProblem.AssignedUserId;
+                    problem.AssignedUser = assignedUser;
                     DbContext.Problems.Update(problem);
                     DbContext.SaveChanges();
                     return Ok(problem);
@@ -59,7 +66,7 @@ namespace ITIL.Controllers
         [HttpGet("/Problems")]
         public IActionResult Problems()
         {
-            var problems = DbContext.Problems.OrderByDescending(p => p.CreatedDate);
+            var problems = DbContext.Problems.Include(i => i.AssignedUser).OrderByDescending(p => p.CreatedDate);
             return View(problems);
         }
 
@@ -73,6 +80,7 @@ namespace ITIL.Controllers
               if(configurationItem != null) {
                 problem.ConfigurationItem = configurationItem;
               }
+              ViewBag.Users = DbContext.Users;
               return View(problem);
             }
             return NotFound($"{problemId} not found");
@@ -83,6 +91,7 @@ namespace ITIL.Controllers
         public IActionResult NewProblem()
         {
             var items = DbContext.Configuration;
+            ViewBag.Users = DbContext.Users;
             return View(items);
         }
 

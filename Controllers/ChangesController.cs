@@ -2,6 +2,7 @@ using ITIL.Data;
 using ITIL.Data.Domain;
 using ITIL.Model;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ITIL.Controllers
 {
@@ -20,6 +21,7 @@ namespace ITIL.Controllers
             {
                 var user = DbContext.Users.SingleOrDefault(u => u.Id == change.UserId);
                 var configurationItem = DbContext.Configuration.SingleOrDefault(c => c.Id == change.ConfigurationItemId);
+                var assignedUser = DbContext.Users.SingleOrDefault(u => u.Id == change.AssignedUserId);
                 DbContext.Changes.Add(new Change()
                 {
                     Title = change.Title,
@@ -31,7 +33,9 @@ namespace ITIL.Controllers
                     ConfigurationItem = configurationItem,
                     ClientName = change.ClientName,
                     ClientEmail = change.ClientEmail,
-                    State = State.ABIERTO
+                    State = State.ABIERTO,
+                    AssignedUserId = change.AssignedUserId,
+                    AssignedUser = assignedUser,
                 });
 
                 DbContext.SaveChanges();
@@ -46,12 +50,15 @@ namespace ITIL.Controllers
         {
             if (ModelState.IsValid)
             {
-                var change = DbContext.Changes.SingleOrDefault(i => i.Id == changeId);
+                var change = DbContext.Changes.Include(i => i.AssignedUser).SingleOrDefault(i => i.Id == changeId);
+                var assignedUser = DbContext.Users.SingleOrDefault(u => u.Id == modifiedChange.AssignedUserId);
                 if(change != null)
                 {
                     change.Title = modifiedChange.Title;
                     change.Description = modifiedChange.Description;
                     change.State = modifiedChange.State;
+                    change.AssignedUserId = modifiedChange.AssignedUserId;
+                    change.AssignedUser = assignedUser;
                     DbContext.Changes.Update(change);
                     DbContext.SaveChanges();
                     return Ok(change);
@@ -64,6 +71,7 @@ namespace ITIL.Controllers
         public IActionResult Changes()
         {
             var changes = DbContext.Changes
+            .Include(i => i.AssignedUser)
             .OrderByDescending(c => c.CreatedDate);
             return View(changes);
         }
@@ -79,6 +87,7 @@ namespace ITIL.Controllers
               if(configurationItem != null) {
                 change.ConfigurationItem = configurationItem;
               }
+              ViewBag.Users = DbContext.Users;
               return View(change);
             }
             return NotFound($"{changeId} not found");
@@ -89,6 +98,7 @@ namespace ITIL.Controllers
         public IActionResult NewChange()
         {
             var items = DbContext.Configuration;
+            ViewBag.Users = DbContext.Users;
             return View(items);
         }
 

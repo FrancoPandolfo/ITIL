@@ -1,7 +1,6 @@
 @using ITIL.Data.Domain;
 @model IEnumerable<ConfigurationItem>
 
-
 <style>
     body {
         background-image: url("https://www.fair-computer.de/wp-content/uploads/adobestock_280046195.jpg");
@@ -130,6 +129,16 @@
     </div>
 
     <div class="form-group">
+        <label for="AssignedUser">Asignar a:</label>
+        <select name="AssignedUser" id="AssignedUser">
+            @foreach (var user in (IEnumerable<User>)ViewBag.Users)
+            {
+                <option value=@user.Id>@user.Email</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
         <label for="ClientName">Nombre del Cliente</label>
         <input type="text" id="ClientName" name="ClientName" class="form-control" />
     </div>
@@ -173,6 +182,7 @@
             var rootCause = document.getElementById("RootCause").value;
             var clientName = document.getElementById("ClientName").value;
             var clientEmail = document.getElementById("ClientEmail").value;
+            var assignedUserId = document.getElementById("AssignedUser").value;
 
             var incident = {
                 Title: title,
@@ -182,7 +192,8 @@
                 TrackingNumber: trackingNumber,
                 RootCause: rootCause,
                 ClientName: clientName,
-                ClientEmail: clientEmail
+                ClientEmail: clientEmail,
+                AssignedUserId: assignedUserId
             };
 
             // Include the userId in the request headers
