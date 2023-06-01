@@ -33,6 +33,8 @@ namespace ITIL.Controllers
                     ConfigurationItem = configurationItem,
                     AssignedUserId = problem.AssignedUserId,
                     AssignedUser = assignedUser,
+                    Impact = problem.Impact,
+                    Priority = problem.Priority
                 });
 
                 DbContext.SaveChanges();
@@ -55,6 +57,8 @@ namespace ITIL.Controllers
                     problem.Description = modifiedProblem.Description;
                     problem.AssignedUserId = modifiedProblem.AssignedUserId;
                     problem.AssignedUser = assignedUser;
+                    problem.Impact = modifiedProblem.Impact;
+                    problem.Priority = modifiedProblem.Priority;
                     DbContext.Problems.Update(problem);
                     DbContext.SaveChanges();
                     return Ok(problem);

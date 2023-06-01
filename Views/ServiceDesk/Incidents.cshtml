@@ -92,6 +92,8 @@
                 <th>Client Name</th>
                 <th>Client Email</th>
                 <th>State</th>
+                <th>Impact</th>
+                <th>Priority</th>
                 <th>Created Date</th>
                 <th>Last Updated</th>
                 <th>Closed Date</th>
@@ -107,6 +109,8 @@
                 <th><input type="text" id="filterClientName" onkeyup="filterTable('ClientName', this.value)" placeholder="Filter Client Name"></th>
                 <th><input type="text" id="filterClientEmail" onkeyup="filterTable('ClientEmail', this.value)" placeholder="Filter Client Email"></th>
                 <th><input type="text" id="filterState" onkeyup="filterTable('State', this.value)" placeholder="Filter State"></th>
+                <th><input type="text" id="filterImpact" onkeyup="filterTable('Impact', this.value)" placeholder="Filter Impact"></th>
+                <th><input type="text" id="filterPriority" onkeyup="filterTable('Priority', this.value)" placeholder="Filter Priority"></th>
                 <th><input type="text" id="filterCreatedDate" onkeyup="filterTable('CreatedDate', this.value)" placeholder="Filter Created Date"></th>
                 <th><input type="text" id="filterLastUpdated" onkeyup="filterTable('LastUpdated', this.value)" placeholder="Filter LastUpdated"></th>
                 <th><input type="text" id="filterClosedDate" onkeyup="filterTable('ClosedDate', this.value)" placeholder="Filter Closed Date"></th>
@@ -127,6 +131,8 @@
                     <td>@incident.ClientName</td>
                     <td>@incident.ClientEmail</td>
                     <td>@incident.State</td>
+                    <td>@incident.Impact</td>
+                    <td>@incident.Priority</td>
                     <td>@incident.CreatedDate</td>
                     <td>@incident.LastUpdated</td>
                      <td>@incident.ClosedDate</td>
@@ -136,7 +142,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="11"><hr></td>
+                    <td colspan="14"><hr></td>
                 </tr>
             }
         </tbody>

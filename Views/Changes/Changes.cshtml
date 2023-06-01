@@ -89,6 +89,8 @@
             <th>Client Name</th>
             <th>Client Email</th>
             <th>State</th>
+            <th>Impact</th>
+            <th>Priority</th>
             <th>Created Date</th>
         </tr>
         <tr>
@@ -98,6 +100,8 @@
             <th><input type="text" id="filterChaneClientName" onkeyup="filterTable('ChangeClientName', this.value)" placeholder="Filter Client Name"></th>
             <th><input type="text" id="filterChangeClientEmail" onkeyup="filterTable('ChangeClientEmail', this.value)" placeholder="Filter Client Email"></th>
             <th><input type="text" id="filterChangeState" onkeyup="filterTable('ChangeState', this.value)" placeholder="Filter State"></th>
+            <th><input type="text" id="filterChangeImpact" onkeyup="filterTable('ChangeImpact', this.value)" placeholder="Filter Impact"></th>
+            <th><input type="text" id="filterChangePriority" onkeyup="filterTable('ChangePriority', this.value)" placeholder="Filter Priority"></th>
             <th><input type="text" id="filterChangeCreatedDate" onkeyup="filterTable('ChangeCreatedDate', this.value)" placeholder="Filter Created Date"></th>
         </tr>
     </thead>
@@ -111,6 +115,8 @@
                 <td>@change.ClientName</td>
                 <td>@change.ClientEmail</td>
                 <td>@change.State</td>
+                <td>@change.Impact</td>
+                <td>@change.Priority</td>
                 <td>@change.CreatedDate</td>
                 <td>
                     <a href="/Changes/@change.Id" class="button-link">Edit</a>
@@ -118,7 +124,7 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="3"><hr></td>
+                <td colspan="8"><hr></td>
             </tr>
         }
     </tbody>

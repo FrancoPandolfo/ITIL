@@ -16,5 +16,7 @@ namespace ITIL.Data.Domain
         public int AssignedUserId {get;set;}
         [ForeignKey("AssignedUserId")]
         public virtual User AssignedUser {get;set;}
+        public string Impact {get;set;}
+        public string Priority {get;set;}
     }
 }

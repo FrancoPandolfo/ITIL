@@ -139,6 +139,24 @@
             }
         </select>
     </div>
+    
+    <div class="form-group">
+        <label for="Impact">Impacto</label>
+        <select id="Impact" name="Impact" class="form-control">
+            <option value="BAJO" @if (Model.Impact == Level.BAJO) { <text>selected</text> }>BAJO</option>
+            <option value="MEDIO" @if (Model.Impact == Level.MEDIO) { <text>selected</text> }>MEDIO</option>
+            <option value="ALTO" @if (Model.Impact == Level.ALTO) { <text>selected</text> }>ALTO</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="Priority">Prioridad</label>
+        <select id="Priority" name="Priority" class="form-control">
+            <option value="BAJO" @if (Model.Priority == Level.BAJO) { <text>selected</text> }>BAJO</option>
+            <option value="MEDIO" @if (Model.Priority == Level.MEDIO) { <text>selected</text> }>MEDIO</option>
+            <option value="ALTO" @if (Model.Priority == Level.ALTO) { <text>selected</text> }>ALTO</option>
+        </select>
+    </div>
     <button type="submit" class="new-problem-button login-effect">
         Guardar cambios
         <img class="login-spinner" src="https://icon-library.com/images/waiting-icon-gif/waiting-icon-gif-7.jpg" alt="Loading..." />
@@ -158,11 +176,15 @@
             var title = document.getElementById("Title").value;
             var description = document.getElementById("Description").value;
             var assignedUserId = document.getElementById("AssignedUser").value;
+            var impact = document.getElementById("Impact").value;
+            var priority = document.getElementById("Priority").value;
 
             var problem = {
                 Title: title,
                 Description: description,
-                AssignedUserId: assignedUserId
+                AssignedUserId: assignedUserId,
+                Impact: impact,
+                Priority: priority
             };
 
             // Include the userId in the request headers

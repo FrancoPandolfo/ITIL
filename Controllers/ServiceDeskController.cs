@@ -1,3 +1,5 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using ITIL.Data;
 using ITIL.Data.Domain;
 using ITIL.Model;
@@ -44,6 +46,8 @@ namespace ITIL.Controllers
                     State = State.ABIERTO,
                     AssignedUserId = incident.AssignedUserId,
                     AssignedUser = assignedUser,
+                    Impact = incident.Impact,
+                    Priority = incident.Priority
                 });
 
                 DbContext.SaveChanges();
@@ -67,6 +71,8 @@ namespace ITIL.Controllers
                     incident.State = modifiedIncident.State;
                     incident.AssignedUserId = modifiedIncident.AssignedUserId;
                     incident.AssignedUser = assignedUser;
+                    incident.Impact = modifiedIncident.Impact;
+                    incident.Priority = modifiedIncident.Priority;
                     incident.LastUpdated = DateTime.UtcNow;
                     DbContext.Incidents.Update(incident);
                     DbContext.SaveChanges();

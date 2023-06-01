@@ -36,6 +36,8 @@ namespace ITIL.Controllers
                     State = State.ABIERTO,
                     AssignedUserId = change.AssignedUserId,
                     AssignedUser = assignedUser,
+                    Impact = change.Impact,
+                    Priority = change.Priority
                 });
 
                 DbContext.SaveChanges();
@@ -59,6 +61,8 @@ namespace ITIL.Controllers
                     change.State = modifiedChange.State;
                     change.AssignedUserId = modifiedChange.AssignedUserId;
                     change.AssignedUser = assignedUser;
+                    change.Impact = modifiedChange.Impact;
+                    change.Priority = modifiedChange.Priority;
                     DbContext.Changes.Update(change);
                     DbContext.SaveChanges();
                     return Ok(change);

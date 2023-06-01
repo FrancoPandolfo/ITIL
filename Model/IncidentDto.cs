@@ -12,5 +12,7 @@ namespace ITIL.Model
         public string ClientEmail {get;set;}
         public string? State {get;set;}
         public int AssignedUserId {get;set;}
+        public string Impact {get;set;}
+        public string Priority {get;set;}
     }
 }

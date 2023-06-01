@@ -138,6 +138,24 @@
             }
         </select>
     </div>
+
+    <div class="form-group">
+    <label for="Impact">Impacto</label>
+    <select id="Impact" name="Impact" class="form-control">
+        <option value="BAJO" selected>BAJO</option>
+        <option value="MEDIO">MEDIO</option>
+        <option value="ALTO">ALTO</option>
+    </select>
+    </div>
+
+    <div class="form-group">
+    <label for="Priority">Prioridad</label>
+    <select id="Priority" name="Priority" class="form-control">
+        <option value="BAJO" selected>BAJO</option>
+        <option value="MEDIO">MEDIO</option>
+        <option value="ALTO">ALTO</option>
+    </select>
+    </div>
     <button type="submit" class="new-problem-button login-effect">
         Crear
         <img class="login-spinner" src="https://icon-library.com/images/waiting-icon-gif/waiting-icon-gif-7.jpg" alt="Loading..." />
@@ -158,13 +176,17 @@
             var description = document.getElementById("Description").value;
             var itemId = document.getElementById("ConfigItem").value;
             var assignedUserId = document.getElementById("AssignedUser").value;
+            var impact = document.getElementById("Impact").value;
+            var priority = document.getElementById("Priority").value;
 
             var problem = {
                 Title: title,
                 Description: description,
                 UserId: userId,
                 ConfigurationItemId: itemId,
-                AssignedUserId: assignedUserId
+                AssignedUserId: assignedUserId,
+                Impact: impact,
+                Priority: priority
             };
 
             // Include the userId in the request headers
