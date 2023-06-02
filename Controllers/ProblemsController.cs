@@ -84,6 +84,12 @@ namespace ITIL.Controllers
               if(configurationItem != null) {
                 problem.ConfigurationItem = configurationItem;
               }
+
+              var userInfo = DbContext.Users.SingleOrDefault(u=> u.Id == problem.UserId);
+              if(userInfo != null) {
+                problem.User = userInfo;
+              }
+
               ViewBag.Users = DbContext.Users;
               return View(problem);
             }

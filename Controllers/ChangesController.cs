@@ -91,6 +91,12 @@ namespace ITIL.Controllers
               if(configurationItem != null) {
                 change.ConfigurationItem = configurationItem;
               }
+
+              var userInfo = DbContext.Users.SingleOrDefault(u=> u.Id == change.UserId);
+              if(userInfo != null) {
+                change.User = userInfo;
+              }
+
               ViewBag.Users = DbContext.Users;
               return View(change);
             }
