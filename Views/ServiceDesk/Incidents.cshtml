@@ -133,6 +133,7 @@
                 <th>Created Date</th>
                 <th>Last Updated</th>
                 <th>Closed Date</th>
+                <th>Comments</th>
                 <th>Actions</th>
             </tr>
             <tr>
@@ -156,7 +157,7 @@
         <tbody id="incidentTableBody">
             @foreach (var incident in Model)
             {
-                <tr>
+                <tr id="commentsSection-@incident.Id">
                     <td>@incident.Title</td>
                     <td>@incident.Description</td>
                     <td>@incident.AssignedUser.Email</td>
@@ -170,7 +171,10 @@
                     <td>@incident.Priority</td>
                     <td>@incident.CreatedDate</td>
                     <td>@incident.LastUpdated</td>
-                     <td>@incident.ClosedDate</td>
+                    <td>@incident.ClosedDate</td>
+                    <td>
+                        <button class="button-link" type="button" onclick='showCommentsModal("@incident.Id")'>View Comments</button>
+                    </td>
                     <td>
                         <a href="/ServiceDesk/Incidents/@incident.Id" class="button-link">Edit</a>
                         <button class="button-link" type="button" onclick="confirmDeleteIncident(@incident.Id)">Delete</button>
@@ -189,6 +193,14 @@
             <span class="close">&times;</span>
             <textarea id="commentInput" placeholder="Enter your comment"></textarea>
             <button id="saveCommentButton" onclick="saveComment()">Save Comment</button>
+        </div>
+    </div>
+
+    <div id="commentsModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeCommentsModal()">&times;</span>
+            <h2>Incident Comments</h2>
+            <ul id="commentsList"></ul>
         </div>
     </div>
 }
@@ -311,6 +323,45 @@ else
         // Close the modal and reset the input
         closeModal();
         document.getElementById("commentInput").value = "";
+    }
+
+    function showCommentsModal(incidentId) {
+        currentIncidentId = incidentId;
+        fetch(`/ServiceDesk/Incidents/${incidentId}/Comments`)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            })
+            .then(data => {
+                const commentsList = document.getElementById("commentsList");
+                commentsList.innerHTML = ""; // Clear any previous comments
+
+                if (data && data.comments && data.comments.$values.length > 0) {
+                    data.comments.$values.forEach(comment => {
+                        const commentElement = document.createElement("li");
+                        commentElement.textContent = comment;
+                        commentsList.appendChild(commentElement);
+                    });
+                } else {
+                    const noCommentsMessage = document.createElement("li");
+                    noCommentsMessage.textContent = "No comments found.";
+                    commentsList.appendChild(noCommentsMessage);
+                }
+
+                // Display the comments modal
+                const commentsModal = document.getElementById("commentsModal");
+                commentsModal.style.display = "block";
+            })
+            .catch(error => {
+                console.error(`Error fetching comments for incident ${incidentId}:`, error);
+            });
+    }
+
+    function closeCommentsModal() {
+        const commentsModal = document.getElementById("commentsModal");
+        commentsModal.style.display = "none";
     }
 
     //esta es una forma de traer los items mas ineficiente

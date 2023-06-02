@@ -164,14 +164,14 @@ namespace ITIL.Controllers
         }
 
         [HttpGet("/ServiceDesk/Incidents/{incidentId}/Comments")]
-        public IActionResult Comments(long incidentId, [FromBody] string comment)
+        public IActionResult Comments(long incidentId)
         {
             var incident = DbContext.Incidents.SingleOrDefault(i => i.Id == incidentId);
             if (incident == null)
             {
                 return NotFound();
             }
-            return Ok(incident.Comments);
+            return Ok(new { Comments = incident.Comments });
         }
 
         [HttpDelete("/ServiceDesk/Incidents/{incidentId}/Comments/{commentIndex}")]
