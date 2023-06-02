@@ -22,6 +22,8 @@ namespace ITIL.Controllers
                 var user = DbContext.Users.SingleOrDefault(u => u.Id == change.UserId);
                 var configurationItem = DbContext.Configuration.SingleOrDefault(c => c.Id == change.ConfigurationItemId);
                 var assignedUser = DbContext.Users.SingleOrDefault(u => u.Id == change.AssignedUserId);
+                DateTime scheduled = DateTime.Parse(change.ScheduledDate);
+
                 DbContext.Changes.Add(new Change()
                 {
                     Title = change.Title,
@@ -37,7 +39,8 @@ namespace ITIL.Controllers
                     AssignedUserId = change.AssignedUserId,
                     AssignedUser = assignedUser,
                     Impact = change.Impact,
-                    Priority = change.Priority
+                    Priority = change.Priority,
+                    ScheduledDate =  DateTime.SpecifyKind(scheduled, DateTimeKind.Utc)
                 });
 
                 DbContext.SaveChanges();

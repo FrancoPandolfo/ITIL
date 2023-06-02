@@ -140,6 +140,11 @@
     </div>
 
     <div class="form-group">
+        <label for="ScheduledDate">Fecha implementación:</label>
+        <input type="datetime-local" id="ScheduledDate" name="ScheduledDate" class="form-control"/>
+    </div>
+
+    <div class="form-group">
         <label for="ClientName">Nombre del Cliente</label>
         <input type="text" id="ClientName" name="ClientName" class="form-control" />
     </div>
@@ -190,6 +195,7 @@
             var assignedUserId = document.getElementById("AssignedUser").value;
             var impact = document.getElementById("Impact").value;
             var priority = document.getElementById("Priority").value;
+            var scheduledDate = document.getElementById("ScheduledDate").value;
 
             var change = {
                 Title: title,
@@ -200,8 +206,11 @@
                 ClientEmail: clientEmail,
                 AssignedUserId: assignedUserId,
                 Impact: impact,
-                Priority: priority
+                Priority: priority,
+                ScheduledDate: scheduledDate
             };
+
+            console.log(scheduledDate);
 
             // Include the userId in the request headers
             var headers = {

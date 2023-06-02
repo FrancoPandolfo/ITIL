@@ -26,5 +26,6 @@ namespace ITIL.Data.Domain
         public Change(){
             Comments = new List<string>();
         }
+        public DateTime? ScheduledDate { get; set; }
     }
 }
