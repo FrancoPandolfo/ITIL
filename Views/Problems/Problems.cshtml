@@ -64,6 +64,42 @@
     .button-link:hover {
         background-color: #250a91;
     }
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 10% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 600px;
+    }
+
+    .close {
+        color: #888;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
 </style>
 
 <h1>@ViewData["Title"]</h1>
@@ -89,6 +125,8 @@
             <th>Impact</th>
             <th>Priority</th>
             <th>Created Date</th>
+            <th>Comments</th>
+            <th>Actions</th>
         </tr>
         <tr>
             <th><input type="text" id="filterProblemTitle" onkeyup="filterTable('ProblemTitle', this.value)" placeholder="Filter Title"></th>
@@ -110,16 +148,36 @@
                 <td>@problem.Priority</td>
                 <td>@problem.CreatedDate</td>
                 <td>
+                    <button class="button-link" type="button" onclick='showCommentsModal("@problem.Id")'>View Comments</button>
+                </td>
+                <td>
                     <a href="/Problems/@problem.Id" class="button-link">Edit</a>
                     <button class="button-link" type="button" onclick="confirmDeleteProblem(@problem.Id)">Delete</button>
+                    <button class="button-link" type="button" onclick="showCommentModal(@problem.Id)">Add Comment</button>
                 </td>
             </tr>
             <tr>
-                <td colspan="5"><hr></td>
+                <td colspan="6"><hr></td>
             </tr>
         }
     </tbody>
 </table>
+
+<div id="commentModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <textarea id="commentInput" placeholder="Enter your comment"></textarea>
+        <button id="saveCommentButton" onclick="saveComment()">Save Comment</button>
+    </div>
+</div>
+
+<div id="commentsModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close" onclick="closeCommentsModal()">&times;</span>
+        <h2>Problem Comments</h2>
+        <ul id="commentsList"></ul>
+    </div>
+</div>
 }
 else
 {
@@ -181,4 +239,136 @@ else
             }
         }
     }
+
+    var currentProblemId;
+
+    // Get the modal element
+    var modal = document.getElementById("commentModal");
+
+    // Get the <span> element that closes the modal
+    var closeBtn = modal.querySelector(".close");
+
+    // Function to show the modal
+    function showCommentModal(problemId) {
+        currentProblemId = problemId;
+        modal.style.display = "block";
+    }
+
+    // Function to close the modal
+    function closeModal() {
+        modal.style.display = "none";
+    }
+
+    // Close the modal if the user clicks on the close button (X)
+    closeBtn.onclick = function() {
+        closeModal();
+    };
+
+    // Close the modal if the user clicks outside of it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            closeModal();
+        }
+    };
+
+    // Function to save the comment
+    function saveComment() {
+        var comment = document.getElementById("commentInput").value;
+
+        // Make the HTTP POST request to save the comment
+        fetch(`/Problems/${currentProblemId}/Comments/SaveComment`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(comment)
+        })
+        .then(function(response) {
+            if (response.ok) {
+                // Comment saved successfully, update the UI or take any other necessary action
+                console.log("Comment saved successfully");
+            } else {
+                console.error("Failed to save the comment");
+            }
+        })
+        .catch(function() {
+            console.error("Failed to save the comment");
+        });
+
+        // Close the modal and reset the input
+        closeModal();
+        document.getElementById("commentInput").value = "";
+    }
+
+    function showCommentsModal(problemId) {
+        currentProblemId = problemId;
+        fetch(`/Problems/${problemId}/Comments`)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            })
+            .then(data => {
+                const commentsList = document.getElementById("commentsList");
+                commentsList.innerHTML = ""; // Clear any previous comments
+
+                if (data && data.comments && data.comments.$values.length > 0) {
+                    data.comments.$values.forEach((comment, index) => {
+                        const commentElement = document.createElement("li");
+                        commentElement.textContent = comment;
+
+                        // Create the delete button for the comment
+                        const deleteButton = document.createElement("button");
+                        deleteButton.textContent = "Delete";
+                        deleteButton.classList.add("button-link");
+                        deleteButton.addEventListener("click", () => deleteComment(problemId, index));
+
+                        commentElement.appendChild(deleteButton);
+                        commentsList.appendChild(commentElement);
+                    });
+                } else {
+                    const noCommentsMessage = document.createElement("li");
+                    noCommentsMessage.textContent = "No comments found.";
+                    commentsList.appendChild(noCommentsMessage);
+                }
+
+                // Display the comments modal
+                const commentsModal = document.getElementById("commentsModal");
+                commentsModal.style.display = "block";
+            })
+            .catch(error => {
+                console.error(`Error fetching comments for problem ${problemId}:`, error);
+            });
+    }
+
+    function deleteComment(problemId, commentIndex) {
+        if (confirm('Are you sure you want to delete this comment?')) {
+            fetch(`/Problems/${problemId}/Comments/${commentIndex}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Comment deleted successfully, update the UI or take any other necessary action
+                    console.log('Comment deleted successfully');
+                    // Refresh the comments list
+                    showCommentsModal(problemId);
+                } else {
+                    console.error('Error deleting comment:', response.statusText);
+                }
+            })
+            .catch(error => {
+                console.error('Error deleting comment:', error);
+            });
+        }
+    }
+
+    function closeCommentsModal() {
+        const commentsModal = document.getElementById("commentsModal");
+        commentsModal.style.display = "none";
+    }
+
 </script>
