@@ -2,48 +2,83 @@
 @model IEnumerable<ConfigurationItem>
 
 <style>
-    body {
-        background-image: url("https://www.fair-computer.de/wp-content/uploads/adobestock_280046195.jpg");
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-position: center center;
-        height: 100vh;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+* {
+  box-sizing: border-box;
+}
 
-    form {
-        background-color: white;
-        padding: 20px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        width: 400px;
-        height: fit-content;
-    }
+.user-links {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
 
-    h1 {
-        text-align: center;
-        margin-top: 0;
-    }
+body {
+    background-image: url("https://www.fair-computer.de/wp-content/uploads/adobestock_280046195.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-    label {
-        display: block;
-        margin-bottom: 10px;
-    }
+input[type=text], select, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+}
 
-    input[type="text"],
-    textarea {
-        width: 100%;
-        padding: 10px;
-        font-size: 16px;
-        border-radius: 3px;
-        border: 1px solid #ccc;
-    }
+label {
+  padding: 12px 12px 12px 0;
+  display: inline-block;
+}
 
-    .new-incident-button {
+input[type=submit] {
+  background-color: #04AA6D;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  float: right;
+}
+
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+
+.container {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+  width: 700px;
+}
+
+.col-25 {
+  float: left;
+  width: 25%;
+  margin-top: 6px;
+}
+
+.col-75 {
+  float: left;
+  width: 75%;
+  margin-top: 6px;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.new-incident-button {
         display: inline-block;
         padding: 10px 20px;
         font-size: 16px;
@@ -59,21 +94,6 @@
         background-color: #250a91;
     }
 
-    .volver-link {
-        color: #000;
-        text-decoration: none;
-        font-size: 16px;
-    }
-
-    .error-message {
-        color: red;
-    }
-
-    .user-links {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-    }
 
     .login-effect {
         position: relative;
@@ -92,6 +112,7 @@
     .login-effect.login-in-progress .login-spinner {
         display: block;
     }
+
 </style>
 
 <div class="user-links">
@@ -102,18 +123,25 @@
     <a class="volver-link" href="/ServiceDesk/Incidents">Volver</a>
 </div>
 
-<form method="post" id="incident-form">
-    <h1>Nuevo Incidente</h1>
+<div class="container">
+  <form method="post" id="incident-form">
 
-    <div class="form-group">
-        <label for="Title">Título</label>
-        <input type="text" id="Title" name="Title" class="form-control" />
+    <div class="row">
+      <div class="col-25">
+         <label for="Title">Título</label>
+      </div>
+      <div class="col-75">
+        <input type="text" id="Title" name="Title" class="form-control" placeholder="Nombre Incidencia" />
+      </div>
     </div>
 
     @if (Model.Any())
     {
-        <div class="form-group">
-            <label for="ConfigItem">Item afectado:</label>
+        <div class="row">
+        <div class="col-25">
+           <label for="ConfigItem">Item afectado:</label>
+        </div>
+        <div class="col-75">
             <select name="ConfigItem" id="ConfigItem">
                 @foreach (var item in Model)
                 {
@@ -121,66 +149,103 @@
                 }
             </select>
         </div>
+        </div>
     }
 
-    <div class="form-group">
+    <div class="row">
+      <div class="col-25">
         <label for="Description">Descripción</label>
-        <textarea id="Description" name="Description" class="form-control" rows="5"></textarea>
+      </div>
+      <div class="col-75">
+       <textarea id="Description" name="Description" class="form-control" rows="5"></textarea>
+      </div>
     </div>
 
-    <div class="form-group">
+
+    <div class="row">
+      <div class="col-25">
         <label for="AssignedUser">Asignar a:</label>
-        <select name="AssignedUser" id="AssignedUser">
+      </div>
+      <div class="col-75">
+       <select name="AssignedUser" id="AssignedUser">
             @foreach (var user in (IEnumerable<User>)ViewBag.Users)
             {
                 <option value=@user.Id>@user.Email</option>
             }
         </select>
+      </div>
     </div>
 
-    <div class="form-group">
+    <div class="row">
+      <div class="col-25">
         <label for="ClientName">Nombre del Cliente</label>
+      </div>
+      <div class="col-75">
         <input type="text" id="ClientName" name="ClientName" class="form-control" />
+      </div>
     </div>
 
-    <div class="form-group">
+    <div class="row">
+      <div class="col-25">
         <label for="ClientEmail">Email del Cliente</label>
-        <input type="text" id="ClientEmail" name="ClientEmail" class="form-control" />
+      </div>
+      <div class="col-75">
+         <input type="text" id="ClientEmail" name="ClientEmail" class="form-control" />
+      </div>
     </div>
 
-    <div class="form-group">
-    <label for="Impact">Impacto</label>
-    <select id="Impact" name="Impact" class="form-control">
-        <option value="BAJO" selected>BAJO</option>
-        <option value="MEDIO">MEDIO</option>
-        <option value="ALTO">ALTO</option>
-    </select>
+    <div class="row">
+      <div class="col-25">
+        <label for="Impact">Impacto</label>
+      </div>
+      <div class="col-75">
+        <select id="Impact" name="Impact" class="form-control">
+            <option value="BAJO" selected>BAJO</option>
+            <option value="MEDIO">MEDIO</option>
+            <option value="ALTO">ALTO</option>
+        </select>
+      </div>
     </div>
 
-    <div class="form-group">
-    <label for="Priority">Prioridad</label>
-    <select id="Priority" name="Priority" class="form-control">
-        <option value="BAJO" selected>BAJO</option>
-        <option value="MEDIO">MEDIO</option>
-        <option value="ALTO">ALTO</option>
-    </select>
+    <div class="row">
+      <div class="col-25">
+        <label for="Priority">Prioridad</label>
+      </div>
+      <div class="col-75">
+        <select id="Priority" name="Priority" class="form-control">
+            <option value="BAJO" selected>BAJO</option>
+            <option value="MEDIO">MEDIO</option>
+            <option value="ALTO">ALTO</option>
+        </select>
+      </div>
     </div>
-
-    <div class="form-group">
+    
+    <div class="row">
+      <div class="col-25">
         <label for="TrackingNumber">Número de seguimiento</label>
-        <input type="text" id="TrackingNumber" name="TrackingNumber" class="form-control" />
+      </div>
+      <div class="col-75">
+         <input type="text" id="TrackingNumber" name="TrackingNumber" class="form-control" />
+      </div>
     </div>
 
-    <div class="form-group">
+    <div class="row">
+      <div class="col-25">
         <label for="RootCause">Causa raíz</label>
+      </div>
+      <div class="col-75">
         <textarea id="RootCause" name="RootCause" class="form-control" rows="3"></textarea>
+      </div>
     </div>
 
-    <button type="submit" class="new-incident-button login-effect">
+    <div class="row">
+     <button type="submit" class="new-incident-button login-effect">
         Crear
         <img class="login-spinner" src="https://icon-library.com/images/waiting-icon-gif/waiting-icon-gif-7.jpg" alt="Loading..." />
     </button>
-</form>
+    </div>
+  </form>
+</div>
 
 
 <script>

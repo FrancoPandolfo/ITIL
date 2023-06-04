@@ -74,6 +74,7 @@ namespace ITIL.Controllers
                     incident.Impact = modifiedIncident.Impact;
                     incident.Priority = modifiedIncident.Priority;
                     incident.LastUpdated = DateTime.UtcNow;
+                    incident.RootCause = modifiedIncident.RootCause;
                     DbContext.Incidents.Update(incident);
                     DbContext.SaveChanges();
                     return Ok(incident);
