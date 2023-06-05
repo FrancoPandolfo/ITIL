@@ -31,7 +31,8 @@ namespace ITIL.Controllers
                     Description = item.Description,
                     CreatedDate = DateTime.UtcNow,
                     UserId = item.UserId,
-                    User = user
+                    User = user,
+                    VersionId = item.VersionId
                 });
 
                 DbContext.SaveChanges();
@@ -51,6 +52,7 @@ namespace ITIL.Controllers
                 {
                     item.Title = modifiedItem.Title;
                     item.Description = modifiedItem.Description;
+                    item.VersionId = modifiedItem.VersionId;
                     DbContext.Configuration.Update(item);
                     DbContext.SaveChanges();
                     return Ok(item);

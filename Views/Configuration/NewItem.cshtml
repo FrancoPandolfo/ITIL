@@ -106,6 +106,12 @@
         <label for="Title">Título</label>
         <input type="text" id="Title" name="Title" class="form-control" />
     </div>
+
+    <div class="form-group">
+        <label for="VersionId">Versión</label>
+        <input type="text" id="VersionId" name="VersionId" class="form-control" />
+    </div>
+
     <div class="form-group">
         <label for="Description">Descripción</label>
         <textarea id="Description" name="Description" class="form-control" rows="5"></textarea>
@@ -128,11 +134,13 @@
             localStorage.setItem("user-id", userId);
             var title = document.getElementById("Title").value;
             var description = document.getElementById("Description").value;
+            var versionId = document.getElementById("VersionId").value;
 
             var item = {
                 Title: title,
                 Description: description,
-                UserId: userId
+                UserId: userId,
+                VersionId: versionId
             };
 
             // Include the userId in the request headers
