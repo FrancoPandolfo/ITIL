@@ -1,5 +1,6 @@
 @using ITIL.Data.Domain;
-@model ConfigurationItem
+@model ConfigurationItem;
+@using Newtonsoft.Json;
 
 @{
     ViewData["Title"] = "Items de Configuración";
@@ -123,6 +124,17 @@
         <label for="VersionId">Versión</label>
         <input type="text" id="VersionId" name="VersionId" class="form-control" value="@Model.VersionId" />
     </div>
+
+    <div class="form-group">
+        <label for="VersionHistory">Versiones anteriores</label>
+        <input type="text" id="VersionHistory" name="VersionHistory" class="form-control" value="@Model.VersionHistory" />
+    </div>
+
+    <div class="form-group">
+       <label for="VersionHistory">Opciones Versiones</label>
+       <select id="VersionHistorySelect" onchange="modificarForm()"></select>
+    </div>
+
     <div class="form-group">
         <label for="Description">Descripción</label>
         <textarea id="Description" name="Description" class="form-control" rows="5">@Model.Description</textarea>
@@ -196,3 +208,35 @@
         document.body.appendChild(errorElement);
     }
 </script>    
+
+<script>
+
+  var selectElement = document.getElementById('VersionHistorySelect');
+  
+  // Limpiar opciones existentes
+  selectElement.innerHTML = '';
+  
+  var versionHistory = @Html.Raw(Model.VersionHistory);
+  var options = Object.keys(versionHistory);
+
+  // Crear opciones dinámicas
+  for (var i = 0; i < options.length; i++) {
+    var optionElement = document.createElement('option');
+    optionElement.value = options[i];
+    optionElement.textContent = options[i];
+    selectElement.appendChild(optionElement);
+  }
+
+</script>
+
+<script>
+  function modificarForm() {
+    var selectElement = document.getElementById('VersionHistorySelect');
+    var valorSeleccionado = selectElement.value;
+    var versionHistory = @Html.Raw(Model.VersionHistory);
+    var fields = versionHistory[valorSeleccionado].split('|')
+    document.getElementById("Title").value = fields[0].split(':')[1]
+    document.getElementById("VersionId").value = valorSeleccionado
+    document.getElementById("Description").value = fields[1].split(':')[1]
+  }
+</script>

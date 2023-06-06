@@ -8,5 +8,7 @@ namespace ITIL.Data.Domain
         public int UserId { get; set; }
         public virtual User User {get; set;}
         public string VersionId {get; set;}
+        public string VersionHistory {get; set;}
+
     }
 }

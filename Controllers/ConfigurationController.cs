@@ -2,6 +2,7 @@ using ITIL.Data;
 using ITIL.Data.Domain;
 using ITIL.Model;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace ITIL.Controllers
 {
@@ -21,18 +22,22 @@ namespace ITIL.Controllers
 
         [HttpPost("/Configuration/SaveItem")]
         public IActionResult SaveItem([FromBody] ConfigurationItemDto item)
-        {
+        {   
             if (ModelState.IsValid)
             {
                 var user = DbContext.Users.SingleOrDefault(u => u.Id == item.UserId);
+                var history = new Dictionary<string, object>();
+                history[item.VersionId] = String.Format("Titulo:{0}|Descripcion:{1}", item.Title, item.Description);   
                 DbContext.Configuration.Add(new ConfigurationItem()
+                
                 {
                     Title = item.Title,
                     Description = item.Description,
                     CreatedDate = DateTime.UtcNow,
                     UserId = item.UserId,
                     User = user,
-                    VersionId = item.VersionId
+                    VersionId = item.VersionId,
+                    VersionHistory =  JsonConvert.SerializeObject(history)
                 });
 
                 DbContext.SaveChanges();
@@ -47,12 +52,15 @@ namespace ITIL.Controllers
         {
             if (ModelState.IsValid)
             {
-                var item = DbContext.Configuration.SingleOrDefault(i => i.Id == itemId);
+                var item = DbContext.Configuration.SingleOrDefault(i => i.Id == itemId);                
                 if(item != null)
                 {
+                    var history = JsonConvert.DeserializeObject<Dictionary<string, object>>(item.VersionHistory);
+                    history[modifiedItem.VersionId] = String.Format("Titulo:{0}|Descripcion:{1}", modifiedItem.Title, modifiedItem.Description);
                     item.Title = modifiedItem.Title;
                     item.Description = modifiedItem.Description;
                     item.VersionId = modifiedItem.VersionId;
+                    item.VersionHistory =  JsonConvert.SerializeObject(history);
                     DbContext.Configuration.Update(item);
                     DbContext.SaveChanges();
                     return Ok(item);
