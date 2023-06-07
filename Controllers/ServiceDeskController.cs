@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using ITIL.Controllers.EmailTemplates;
 using ITIL.Data;
 using ITIL.Data.Domain;
 using ITIL.Model;
@@ -27,6 +28,11 @@ namespace ITIL.Controllers
         {
             if (ModelState.IsValid)
             {
+                var existingIncident = DbContext.Incidents.FirstOrDefault(i => i.TrackingNumber == incident.TrackingNumber);
+                if (existingIncident != null)
+                {
+                    return BadRequest("The tracking number already exists.");
+                }
                 var user = DbContext.Users.SingleOrDefault(u => u.Id == incident.UserId);
                 var configurationItem = DbContext.Configuration.SingleOrDefault(c => c.Id == incident.ConfigurationItemId);
                 var assignedUser = DbContext.Users.SingleOrDefault(u => u.Id == incident.AssignedUserId);
@@ -51,6 +57,11 @@ namespace ITIL.Controllers
                 });
 
                 DbContext.SaveChanges();
+                NewIncidentEmail.Send(new IncidentEmailDto(){
+                    Title = incident.Title, 
+                    TrackingNumber = incident.TrackingNumber, 
+                    ClientEmail = incident.ClientEmail
+                });
                 return Ok(incident);
             }
 
