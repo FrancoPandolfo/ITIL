@@ -16,7 +16,7 @@ namespace ITIL.Data.Domain
         public int TrackingNumber {get;set;}
         public DateTime ClosedDate {get;set;}
         public DateTime LastUpdated {get;set;}
-        public string RootCause {get;set;}
+        public string? RootCause {get;set;}
         public string ClientName {get;set;}
         public string ClientEmail {get;set;}
         public string State {get;set;}
