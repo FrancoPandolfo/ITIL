@@ -23,5 +23,7 @@ namespace ITIL.Data.Domain
         public Problem(){
             Comments = new List<string>();
         }
+
+        public virtual ICollection<Incident> Incidents {get; set;}
     }
 }

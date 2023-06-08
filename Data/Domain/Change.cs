@@ -27,5 +27,7 @@ namespace ITIL.Data.Domain
             Comments = new List<string>();
         }
         public DateTime? ScheduledDate { get; set; }
+        public virtual ICollection<Incident> Incidents {get; set;}
+        public virtual ICollection<Problem> Problems {get; set;}
     }
 }
