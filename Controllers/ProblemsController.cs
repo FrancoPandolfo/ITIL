@@ -102,6 +102,8 @@ namespace ITIL.Controllers
         {
             var items = DbContext.Configuration;
             ViewBag.Users = DbContext.Users;
+            var incidents = DbContext.Incidents;
+            ViewBag.Incidents = incidents;
             return View(items);
         }
 
