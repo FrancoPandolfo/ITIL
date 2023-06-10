@@ -15,28 +15,36 @@ namespace ITIL.Controllers
         }
 
         [HttpPost("/Problems/SaveProblem")]
-        public IActionResult SaveProblem([FromBody] ProblemDto problem)
+        public IActionResult SaveProblem([FromBody] ProblemDto problemDto)
         {
             if (ModelState.IsValid)
             {
-                var user = DbContext.Users.SingleOrDefault(u => u.Id == problem.UserId);
-                var configurationItem = DbContext.Configuration.SingleOrDefault(c => c.Id == problem.ConfigurationItemId);
-                var assignedUser = DbContext.Users.SingleOrDefault(u => u.Id == problem.AssignedUserId);
-                DbContext.Problems.Add(new Problem()
+                var user = DbContext.Users.SingleOrDefault(u => u.Id == problemDto.UserId);
+                var configurationItem = DbContext.Configuration.SingleOrDefault(c => c.Id == problemDto.ConfigurationItemId);
+                var assignedUser = DbContext.Users.SingleOrDefault(u => u.Id == problemDto.AssignedUserId);
+                var incidents = DbContext.Incidents.Include(i => i.Problems).Where(i => problemDto.IncidentIds.Contains(i.Id)).ToList();
+                var problem = new Problem()
                 {
-                    Title = problem.Title,
-                    Description = problem.Description,
+                    Title = problemDto.Title,
+                    Description = problemDto.Description,
                     CreatedDate = DateTime.UtcNow,
-                    UserId = problem.UserId,
+                    UserId = problemDto.UserId,
                     User = user,
-                    ConfigurationItemId = problem.ConfigurationItemId,
+                    ConfigurationItemId = problemDto.ConfigurationItemId,
                     ConfigurationItem = configurationItem,
-                    AssignedUserId = problem.AssignedUserId,
+                    AssignedUserId = problemDto.AssignedUserId,
                     AssignedUser = assignedUser,
-                    Impact = problem.Impact,
-                    Priority = problem.Priority
-                });
+                    Impact = problemDto.Impact,
+                    Priority = problemDto.Priority,
+                    Incidents = incidents
+                };
 
+                foreach (var incident in incidents)
+                {
+                    incident.Problems.Add(problem);
+                }
+
+                DbContext.Problems.Add(problem);
                 DbContext.SaveChanges();
                 return Ok(problem);
             }
@@ -70,7 +78,10 @@ namespace ITIL.Controllers
         [HttpGet("/Problems")]
         public IActionResult Problems()
         {
-            var problems = DbContext.Problems.Include(i => i.AssignedUser).OrderByDescending(p => p.CreatedDate);
+            var problems = DbContext.Problems
+            .Include(i => i.AssignedUser)
+            .Include(i => i.Incidents)
+            .OrderByDescending(p => p.CreatedDate);
             return View(problems);
         }
 
@@ -166,6 +177,17 @@ namespace ITIL.Controllers
             DbContext.SaveChanges();
 
             return NoContent();
+        }
+
+        [HttpGet("/Problems/{problemId}/Incidents")]
+        public IActionResult ProblemIncidents(long problemId)
+        {
+            var problem = DbContext.Problems.Include(i => i.Incidents).SingleOrDefault(i => i.Id == problemId);
+            if(problem != null)
+            {
+                return Ok(problem.Incidents);
+            }
+            return NotFound();
         }
     }
 }

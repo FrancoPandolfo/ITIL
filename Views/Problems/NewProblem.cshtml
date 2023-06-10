@@ -140,6 +140,16 @@
     </div>
 
     <div class="form-group">
+        <label for="Incidents">Incidentes Relacionados:</label>
+        <select multiple name="Incidents" id="Incidents" class="form-control">
+            @foreach (var incident in (IEnumerable<Incident>)ViewBag.Incidents)
+            {
+                <option value="@incident.Id">@incident.Title</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
     <label for="Impact">Impacto</label>
     <select id="Impact" name="Impact" class="form-control">
         <option value="BAJO" selected>BAJO</option>
@@ -178,7 +188,9 @@
             var assignedUserId = document.getElementById("AssignedUser").value;
             var impact = document.getElementById("Impact").value;
             var priority = document.getElementById("Priority").value;
-
+            var selectedIncidents = Array.from(document.getElementById("Incidents").selectedOptions)
+                .map(option => option.value);
+                
             var problem = {
                 Title: title,
                 Description: description,
@@ -186,7 +198,8 @@
                 ConfigurationItemId: itemId,
                 AssignedUserId: assignedUserId,
                 Impact: impact,
-                Priority: priority
+                Priority: priority,
+                IncidentIds: selectedIncidents
             };
 
             // Include the userId in the request headers

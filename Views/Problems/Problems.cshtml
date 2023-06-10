@@ -125,6 +125,7 @@
             <th>Impact</th>
             <th>Priority</th>
             <th>Created Date</th>
+            <th>Incidents</th>
             <th>Comments</th>
             <th>Actions</th>
         </tr>
@@ -147,6 +148,9 @@
                 <td>@problem.Impact</td>
                 <td>@problem.Priority</td>
                 <td>@problem.CreatedDate</td>
+                <td>
+                    <button class="button-link" type="button" onclick='showIncidentsModal("@problem.Id")'>View Incidents</button>
+                </td>
                 <td>
                     <button class="button-link" type="button" onclick='showCommentsModal("@problem.Id")'>View Comments</button>
                 </td>
@@ -176,6 +180,14 @@
         <span class="close" onclick="closeCommentsModal()">&times;</span>
         <h2>Problem Comments</h2>
         <ul id="commentsList"></ul>
+    </div>
+</div>
+
+<div id="incidentsModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close" onclick="closeIncidentsModal()">&times;</span>
+        <h2>Problem Incidents</h2>
+        <ul id="incidentsList"></ul>
     </div>
 </div>
 }
@@ -370,5 +382,46 @@ else
         const commentsModal = document.getElementById("commentsModal");
         commentsModal.style.display = "none";
     }
+    
+    function showIncidentsModal(problemId) {
+        currentProblemId = problemId;
+        fetch(`/Problems/${problemId}/Incidents`)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            })
+            .then(data => {
+                console.log(data); // Log the data to the console
 
+                const incidentsList = document.getElementById("incidentsList");
+                incidentsList.innerHTML = ""; // Clear any previous incidents
+
+                if (data && data.$values && data.$values.length > 0) {
+                    data.$values.forEach(problem => {
+                        const incidentElement = document.createElement("li");
+                        incidentElement.textContent = problem.title;
+
+                        incidentsList.appendChild(incidentElement);
+                    });
+                } else {
+                    const noIncidentsMessage = document.createElement("li");
+                    noIncidentsMessage.textContent = "No incidents found.";
+                    incidentsList.appendChild(noIncidentsMessage);
+                }
+
+                // Display the incidents modal
+                const incidentsModal = document.getElementById("incidentsModal");
+                incidentsModal.style.display = "block";
+            })
+            .catch(error => {
+                console.error(`Error fetching incidents for problem ${problemId}:`, error);
+            });
+    }
+
+    function closeIncidentsModal() {
+        const incidentsModal = document.getElementById("incidentsModal");
+        incidentsModal.style.display = "none";
+    }
 </script>

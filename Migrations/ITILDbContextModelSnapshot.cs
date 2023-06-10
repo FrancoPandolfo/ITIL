@@ -23,6 +23,36 @@ namespace ITIL.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("ChangeIncident", b =>
+                {
+                    b.Property<int>("ChangesId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("IncidentsId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ChangesId", "IncidentsId");
+
+                    b.HasIndex("IncidentsId");
+
+                    b.ToTable("ChangeIncident (Dictionary<string, object>)");
+                });
+
+            modelBuilder.Entity("ChangeProblem", b =>
+                {
+                    b.Property<int>("ChangesId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ProblemsId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ChangesId", "ProblemsId");
+
+                    b.HasIndex("ProblemsId");
+
+                    b.ToTable("ChangeProblem (Dictionary<string, object>)");
+                });
+
             modelBuilder.Entity("ITIL.Data.Domain.Change", b =>
                 {
                     b.Property<int>("Id")
@@ -138,9 +168,6 @@ namespace ITIL.Migrations
                     b.Property<int>("AssignedUserId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("ChangeId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("ClientEmail")
                         .IsRequired()
                         .HasColumnType("text");
@@ -178,9 +205,6 @@ namespace ITIL.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("ProblemId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("RootCause")
                         .HasColumnType("text");
 
@@ -202,11 +226,7 @@ namespace ITIL.Migrations
 
                     b.HasIndex("AssignedUserId");
 
-                    b.HasIndex("ChangeId");
-
                     b.HasIndex("ConfigurationItemId");
-
-                    b.HasIndex("ProblemId");
 
                     b.HasIndex("UserId");
 
@@ -222,9 +242,6 @@ namespace ITIL.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AssignedUserId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("ChangeId")
                         .HasColumnType("integer");
 
                     b.Property<List<string>>("Comments")
@@ -261,8 +278,6 @@ namespace ITIL.Migrations
 
                     b.HasIndex("AssignedUserId");
 
-                    b.HasIndex("ChangeId");
-
                     b.HasIndex("ConfigurationItemId");
 
                     b.HasIndex("UserId");
@@ -291,6 +306,51 @@ namespace ITIL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("User");
+                });
+
+            modelBuilder.Entity("IncidentProblem", b =>
+                {
+                    b.Property<int>("IncidentsId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ProblemsId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("IncidentsId", "ProblemsId");
+
+                    b.HasIndex("ProblemsId");
+
+                    b.ToTable("IncidentProblem (Dictionary<string, object>)");
+                });
+
+            modelBuilder.Entity("ChangeIncident", b =>
+                {
+                    b.HasOne("ITIL.Data.Domain.Change", null)
+                        .WithMany()
+                        .HasForeignKey("ChangesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ITIL.Data.Domain.Incident", null)
+                        .WithMany()
+                        .HasForeignKey("IncidentsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ChangeProblem", b =>
+                {
+                    b.HasOne("ITIL.Data.Domain.Change", null)
+                        .WithMany()
+                        .HasForeignKey("ChangesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ITIL.Data.Domain.Problem", null)
+                        .WithMany()
+                        .HasForeignKey("ProblemsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ITIL.Data.Domain.Change", b =>
@@ -339,19 +399,11 @@ namespace ITIL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ITIL.Data.Domain.Change", null)
-                        .WithMany("Incidents")
-                        .HasForeignKey("ChangeId");
-
                     b.HasOne("ITIL.Data.Domain.ConfigurationItem", "ConfigurationItem")
                         .WithMany()
                         .HasForeignKey("ConfigurationItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("ITIL.Data.Domain.Problem", null)
-                        .WithMany("Incidents")
-                        .HasForeignKey("ProblemId");
 
                     b.HasOne("ITIL.Data.Domain.User", "User")
                         .WithMany("Incidents")
@@ -374,10 +426,6 @@ namespace ITIL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ITIL.Data.Domain.Change", null)
-                        .WithMany("Problems")
-                        .HasForeignKey("ChangeId");
-
                     b.HasOne("ITIL.Data.Domain.ConfigurationItem", "ConfigurationItem")
                         .WithMany()
                         .HasForeignKey("ConfigurationItemId")
@@ -397,16 +445,19 @@ namespace ITIL.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ITIL.Data.Domain.Change", b =>
+            modelBuilder.Entity("IncidentProblem", b =>
                 {
-                    b.Navigation("Incidents");
+                    b.HasOne("ITIL.Data.Domain.Incident", null)
+                        .WithMany()
+                        .HasForeignKey("IncidentsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Problems");
-                });
-
-            modelBuilder.Entity("ITIL.Data.Domain.Problem", b =>
-                {
-                    b.Navigation("Incidents");
+                    b.HasOne("ITIL.Data.Domain.Problem", null)
+                        .WithMany()
+                        .HasForeignKey("ProblemsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ITIL.Data.Domain.User", b =>

@@ -25,5 +25,6 @@ namespace ITIL.Data.Domain
         }
 
         public virtual ICollection<Incident> Incidents {get; set;}
+        public virtual ICollection<Change> Changes { get; set; }
     }
 }
