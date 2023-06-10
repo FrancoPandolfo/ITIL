@@ -217,5 +217,65 @@ namespace ITIL.Controllers
             }
             return NotFound();
         }
+
+        [HttpPatch("/Changes/{changeId}/Incidents/{incidentId}")]
+        public IActionResult AddIncident(long changeId, long incidentId)
+        {
+            var change = DbContext.Changes.Include(i => i.Incidents).SingleOrDefault(i => i.Id == changeId);
+            var incident = DbContext.Incidents.Include(i => i.Changes).SingleOrDefault(i => i.Id == incidentId);
+            if(change != null && incident != null)
+            {
+                change.Incidents.Add(incident);
+                incident.Changes.Add(change);
+                DbContext.SaveChanges();
+                return Ok(incident);
+            }
+            return NotFound();
+        }
+
+        [HttpDelete("/Changes/{changeId}/Incidents/{incidentId}")]
+        public IActionResult RemoveIncident(long changeId, long incidentId)
+        {
+            var change = DbContext.Changes.Include(i => i.Incidents).SingleOrDefault(i => i.Id == changeId);
+            var incident = DbContext.Incidents.Include(i => i.Changes).SingleOrDefault(i => i.Id == incidentId);
+            if(change != null && incident != null)
+            {
+                change.Incidents.Remove(incident);
+                incident.Changes.Remove(change);
+                DbContext.SaveChanges();
+                return Ok(incident);
+            }
+            return NotFound();
+        }
+
+        [HttpPatch("/Changes/{changeId}/Problems/{problemId}")]
+        public IActionResult AddProblem(long changeId, long problemId)
+        {
+            var change = DbContext.Changes.Include(i => i.Problems).SingleOrDefault(i => i.Id == changeId);
+            var problem = DbContext.Problems.Include(i => i.Changes).SingleOrDefault(i => i.Id == problemId);
+            if(change != null && problem != null)
+            {
+                change.Problems.Add(problem);
+                problem.Changes.Add(change);
+                DbContext.SaveChanges();
+                return Ok(problem);
+            }
+            return NotFound();
+        }
+
+        [HttpDelete("/Changes/{changeId}/Problems/{problemId}")]
+        public IActionResult RemoveProblem(long changeId, long problemId)
+        {
+            var change = DbContext.Changes.Include(i => i.Problems).SingleOrDefault(i => i.Id == changeId);
+            var problem = DbContext.Problems.Include(i => i.Changes).SingleOrDefault(i => i.Id == problemId);
+            if(change != null && problem != null)
+            {
+                change.Problems.Remove(problem);
+                problem.Changes.Remove(change);
+                DbContext.SaveChanges();
+                return Ok(problem);
+            }
+            return NotFound();
+        }
     }
 }

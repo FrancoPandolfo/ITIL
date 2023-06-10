@@ -189,5 +189,35 @@ namespace ITIL.Controllers
             }
             return NotFound();
         }
+
+        [HttpPatch("/Problems/{problemId}/Incidents/{incidentId}")]
+        public IActionResult AddIncident(long problemId, long incidentId)
+        {
+            var problem = DbContext.Problems.Include(i => i.Incidents).SingleOrDefault(i => i.Id == problemId);
+            var incident = DbContext.Incidents.Include(i => i.Problems).SingleOrDefault(i => i.Id == incidentId);
+            if(problem != null && incident != null)
+            {
+                problem.Incidents.Add(incident);
+                incident.Problems.Add(problem);
+                DbContext.SaveChanges();
+                return Ok(incident);
+            }
+            return NotFound();
+        }
+
+        [HttpDelete("/Problems/{problemId}/Incidents/{incidentId}")]
+        public IActionResult RemoveIncident(long problemId, long incidentId)
+        {
+            var problem = DbContext.Problems.Include(i => i.Incidents).SingleOrDefault(i => i.Id == problemId);
+            var incident = DbContext.Incidents.Include(i => i.Problems).SingleOrDefault(i => i.Id == incidentId);
+            if(problem != null && incident != null)
+            {
+                problem.Incidents.Remove(incident);
+                incident.Problems.Remove(problem);
+                DbContext.SaveChanges();
+                return Ok(incident);
+            }
+            return NotFound();
+        }
     }
 }
