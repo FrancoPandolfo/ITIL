@@ -13,5 +13,7 @@ namespace ITIL.Model
         public string Impact {get;set;}
         public string Priority {get;set;}
         public string? ScheduledDate {get;set;}
+        public List<int> IncidentIds { get; set; }
+        public List<int> ProblemIds { get; set; }
     }
 }

@@ -15,34 +15,48 @@ namespace ITIL.Controllers
         }
 
         [HttpPost("/Changes/SaveChange")]
-        public IActionResult SaveChange([FromBody] ChangeDto change)
+        public IActionResult SaveChange([FromBody] ChangeDto changeDto)
         {
             if (ModelState.IsValid)
             {
-                var user = DbContext.Users.SingleOrDefault(u => u.Id == change.UserId);
-                var configurationItem = DbContext.Configuration.SingleOrDefault(c => c.Id == change.ConfigurationItemId);
-                var assignedUser = DbContext.Users.SingleOrDefault(u => u.Id == change.AssignedUserId);
-                DateTime scheduled = DateTime.Parse(change.ScheduledDate);
+                var user = DbContext.Users.SingleOrDefault(u => u.Id == changeDto.UserId);
+                var configurationItem = DbContext.Configuration.SingleOrDefault(c => c.Id == changeDto.ConfigurationItemId);
+                var assignedUser = DbContext.Users.SingleOrDefault(u => u.Id == changeDto.AssignedUserId);
+                DateTime scheduled = DateTime.Parse(changeDto.ScheduledDate);
+                var incidents = DbContext.Incidents.Include(i => i.Changes).Where(i => changeDto.IncidentIds.Contains(i.Id)).ToList();
+                var problems = DbContext.Problems.Include(p => p.Changes).Where(p => changeDto.ProblemIds.Contains(p.Id)).ToList();
 
-                DbContext.Changes.Add(new Change()
+                var change = new Change()
                 {
-                    Title = change.Title,
-                    Description = change.Description,
+                    Title = changeDto.Title,
+                    Description = changeDto.Description,
                     CreatedDate = DateTime.UtcNow,
-                    UserId = change.UserId,
+                    UserId = changeDto.UserId,
                     User = user,
-                    ConfigurationItemId = change.ConfigurationItemId,
+                    ConfigurationItemId = changeDto.ConfigurationItemId,
                     ConfigurationItem = configurationItem,
-                    ClientName = change.ClientName,
-                    ClientEmail = change.ClientEmail,
+                    ClientName = changeDto.ClientName,
+                    ClientEmail = changeDto.ClientEmail,
                     State = State.ABIERTO,
-                    AssignedUserId = change.AssignedUserId,
+                    AssignedUserId = changeDto.AssignedUserId,
                     AssignedUser = assignedUser,
-                    Impact = change.Impact,
-                    Priority = change.Priority,
-                    ScheduledDate =  DateTime.SpecifyKind(scheduled, DateTimeKind.Utc)
-                });
+                    Impact = changeDto.Impact,
+                    Priority = changeDto.Priority,
+                    ScheduledDate =  DateTime.SpecifyKind(scheduled, DateTimeKind.Utc),
+                    Incidents = incidents,
+                    Problems = problems
+                };
 
+                foreach (var incident in incidents)
+                {
+                    incident.Changes.Add(change);
+                }
+                foreach (var problem in problems)
+                {
+                    problem.Changes.Add(change);
+                }
+                
+                DbContext.Changes.Add(change);
                 DbContext.SaveChanges();
                 return Ok(change);
             }
@@ -79,6 +93,8 @@ namespace ITIL.Controllers
         {
             var changes = DbContext.Changes
             .Include(i => i.AssignedUser)
+            .Include(i => i.Incidents)
+            .Include(i => i.Problems)
             .OrderByDescending(c => c.CreatedDate);
             return View(changes);
         }
@@ -112,6 +128,10 @@ namespace ITIL.Controllers
         {
             var items = DbContext.Configuration;
             ViewBag.Users = DbContext.Users;
+            var incidents = DbContext.Incidents;
+            ViewBag.Incidents = incidents;
+            var problems = DbContext.Problems;
+            ViewBag.Problems = problems;
             return View(items);
         }
 
@@ -174,6 +194,28 @@ namespace ITIL.Controllers
             DbContext.SaveChanges();
 
             return NoContent();
+        }
+
+        [HttpGet("/Changes/{changeId}/Incidents")]
+        public IActionResult ChangeIncidents(long changeId)
+        {
+            var change = DbContext.Changes.Include(i => i.Incidents).SingleOrDefault(i => i.Id == changeId);
+            if(change != null)
+            {
+                return Ok(change.Incidents);
+            }
+            return NotFound();
+        }
+
+        [HttpGet("/Changes/{changeId}/Problems")]
+        public IActionResult ChangeProblems(long changeId)
+        {
+            var change = DbContext.Changes.Include(i => i.Problems).SingleOrDefault(i => i.Id == changeId);
+            if(change != null)
+            {
+                return Ok(change.Problems);
+            }
+            return NotFound();
         }
     }
 }

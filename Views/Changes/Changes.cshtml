@@ -128,6 +128,8 @@
             <th>Impact</th>
             <th>Priority</th>
             <th>Created Date</th>
+            <th>Incidents</th>
+            <th>Problems</th>
             <th>Comments</th>
             <th>Actions</th>
         </tr>
@@ -157,6 +159,12 @@
                 <td>@change.Priority</td>
                 <td>@change.CreatedDate</td>
                 <td>
+                    <button class="button-link" type="button" onclick='showIncidentsModal("@change.Id")'>View Incidents</button>
+                </td>
+                <td>
+                    <button class="button-link" type="button" onclick='showProblemsModal("@change.Id")'>View Problems</button>
+                </td>
+                <td>
                     <button class="button-link" type="button" onclick='showCommentsModal("@change.Id")'>View Comments</button>
                 </td>
                 <td>
@@ -185,6 +193,22 @@
         <span class="close" onclick="closeCommentsModal()">&times;</span>
         <h2>Change Comments</h2>
         <ul id="commentsList"></ul>
+    </div>
+</div>
+
+<div id="incidentsModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close" onclick="closeIncidentsModal()">&times;</span>
+        <h2>Change Incidents</h2>
+        <ul id="incidentsList"></ul>
+    </div>
+</div>
+
+<div id="problemsModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close" onclick="closeProblemsModal()">&times;</span>
+        <h2>Change Problems</h2>
+        <ul id="problemsList"></ul>
     </div>
 </div>
 }
@@ -378,5 +402,89 @@ else
     function closeCommentsModal() {
         const commentsModal = document.getElementById("commentsModal");
         commentsModal.style.display = "none";
+    }
+
+    function showIncidentsModal(changeId) {
+        currentChangeId = changeId;
+        fetch(`/Changes/${changeId}/Incidents`)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            })
+            .then(data => {
+                console.log(data); // Log the data to the console
+
+                const incidentsList = document.getElementById("incidentsList");
+                incidentsList.innerHTML = ""; // Clear any previous incidents
+
+                if (data && data.$values && data.$values.length > 0) {
+                    data.$values.forEach(problem => {
+                        const incidentElement = document.createElement("li");
+                        incidentElement.textContent = problem.title;
+
+                        incidentsList.appendChild(incidentElement);
+                    });
+                } else {
+                    const noIncidentsMessage = document.createElement("li");
+                    noIncidentsMessage.textContent = "No incidents found.";
+                    incidentsList.appendChild(noIncidentsMessage);
+                }
+
+                // Display the incidents modal
+                const incidentsModal = document.getElementById("incidentsModal");
+                incidentsModal.style.display = "block";
+            })
+            .catch(error => {
+                console.error(`Error fetching incidents for change ${changeId}:`, error);
+            });
+    }
+
+    function closeIncidentsModal() {
+        const incidentsModal = document.getElementById("incidentsModal");
+        incidentsModal.style.display = "none";
+    }
+
+    function showProblemsModal(changeId) {
+        currentChangeId = changeId;
+        fetch(`/Changes/${changeId}/Problems`)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            })
+            .then(data => {
+                console.log(data); // Log the data to the console
+
+                const problemsList = document.getElementById("problemsList");
+                problemsList.innerHTML = ""; // Clear any previous problems
+
+                if (data && data.$values && data.$values.length > 0) {
+                    data.$values.forEach(problem => {
+                        const problemElement = document.createElement("li");
+                        problemElement.textContent = problem.title;
+
+                        problemsList.appendChild(problemElement);
+                    });
+                } else {
+                    const noProblemsMessage = document.createElement("li");
+                    noProblemsMessage.textContent = "No problems found.";
+                    problemsList.appendChild(noProblemsMessage);
+                }
+
+                // Display the problems modal
+                const problemsModal = document.getElementById("problemsModal");
+                problemsModal.style.display = "block";
+            })
+            .catch(error => {
+                console.error(`Error fetching problems for change ${changeId}:`, error);
+            });
+    }
+
+    function closeProblemsModal() {
+        const problemsModal = document.getElementById("problemsModal");
+        problemsModal.style.display = "none";
     }
 </script>
