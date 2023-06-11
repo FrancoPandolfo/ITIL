@@ -18645,6 +18645,11 @@
   "RootNamespace": "ITIL",
   "Documents": [
     {
+      "FilePath": "/home/fpandolfo/ITIL/Views/Metrics/Metrics.cshtml",
+      "TargetPath": "Views\\Metrics\\Metrics.cshtml",
+      "FileKind": "mvc"
+    },
+    {
       "FilePath": "/home/fpandolfo/ITIL/Views/Configuration/NewItem.cshtml",
       "TargetPath": "Views\\Configuration\\NewItem.cshtml",
       "FileKind": "mvc"

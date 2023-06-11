@@ -48,6 +48,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9JbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[/home/fpandolfo/ITIL/Views/Metrics/Metrics.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTWV0cmljcy9NZXRyaWNzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [/home/fpandolfo/ITIL/Views/Problems/NewProblem.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvYmxlbXMvTmV3UHJvYmxlbS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
