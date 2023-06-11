@@ -61,6 +61,13 @@ input[type=submit]:hover {
   background-color: #f2f2f2;
   padding: 20px;
   width: 700px;
+  height: 90vh;
+  display: flex;
+  justify-content: center;
+  overflow: scroll;
+}
+.incident-form {
+  flex-basis: 700px;
 }
 
 .col-25 {
@@ -76,6 +83,7 @@ input[type=submit]:hover {
 }
 
 /* Clear floats after the columns */
+
 .row:after {
   content: "";
   display: table;
@@ -128,7 +136,7 @@ input[type=submit]:hover {
 </div>
 
 <div class="container">
-  <form method="post" id="incident-form">
+  <form method="post" id="incident-form" class="incident-form">
 
     <div class="row">
       <div class="col-25">
