@@ -6,6 +6,6 @@ namespace ITIL.Model
         public float[] IncidentsPerHour {get;set;}
         public int HourWithMostIncidents {get;set;}
         public string DayWithMostIncidents {get;set;}
-        public TimeSpan AvgResolutionTime {get;set;}
+        public string AvgResolutionTime {get;set;}
     }
 }

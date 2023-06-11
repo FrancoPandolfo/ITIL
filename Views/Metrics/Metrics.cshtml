@@ -1,0 +1,145 @@
+@using ITIL.Model
+@{
+    ViewData["Title"] = "Metricas";
+}
+
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    .new-metric-button {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 16px;
+        text-decoration: none;
+        background-color: #3012a7;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .new-metric-button:hover {
+        background-color: #250a91;
+    }
+
+    .volver-link {
+        color: #000;
+        text-decoration: none;
+        font-size: 16px;
+    }
+
+    .user-links {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+    }
+
+    .button-link {
+        display: inline-block;
+        padding: 5px 10px;
+        font-size: 12px;
+        text-decoration: none;
+        background-color: #3012a7;
+        color: white;
+        border: none;
+        border-radius: 1px;
+        cursor: pointer;
+    }
+
+    .button-link:hover {
+        background-color: #250a91;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 10% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 600px;
+    }
+
+    .close {
+        color: #888;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
+</style>
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="user-links">
+    @if (User.Identity.IsAuthenticated)
+    {
+        <span>@User.Identity.Name</span>
+    }
+    <a class="volver-link" href="/Home/Index">Volver</a>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Incidents Per Day</th>
+            <th>Incidents Per Hour</th>
+            <th>Hour With Most Incidents</th>
+            <th>Day With Most Incidents</th>
+            <th>Average Resolution Time</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td id="incidentsPerDay"></td>
+            <td id="incidentsPerHour"></td>
+            <td id="hourWithMostIncidents"></td>
+            <td id="dayWithMostIncidents"></td>
+            <td id="avgResolutionTime"></td>
+        </tr>
+    </tbody>
+</table>
+
+<script>
+    fetch('/Metrics/Incidents')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('incidentsPerDay').textContent = data.incidentsPerDay.join(', ');
+            document.getElementById('incidentsPerHour').textContent = data.incidentsPerHour.join(', ');
+            document.getElementById('hourWithMostIncidents').textContent = data.hourWithMostIncidents;
+            document.getElementById('dayWithMostIncidents').textContent = data.dayWithMostIncidents;
+            document.getElementById('avgResolutionTime').textContent = data.avgResolutionTime;
+        })
+        .catch(error => console.log(error));
+</script>

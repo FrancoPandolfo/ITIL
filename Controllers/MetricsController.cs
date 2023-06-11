@@ -28,7 +28,7 @@ namespace ITIL.Controllers
 
         public IncidentMetricsDto GetIncidentMetrics()
         {
-            DateTime startDate = new DateTime(2023, 1, 1);
+            DateTime startDate = new DateTime(2023, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             DateTime endDate = DateTime.UtcNow;
 
             int totalDays = (int)(endDate - startDate).TotalDays;
@@ -54,18 +54,17 @@ namespace ITIL.Controllers
                 .Select(g => g.Count())
                 .ToArray();
 
-
             for (int i = 0; i < incidentsCountPerHourOfDay.Length; i++)
             {
                 incidentsPerHour[i] = (float)incidentsCountPerHourOfDay[i] / totalHours;
             }
 
-           int maxDay = incidentsCountPerDayOfWeek.Max();
-           int maxIndex = incidentsCountPerDayOfWeek.ToList().IndexOf(maxDay);
-           string dayWithMostIncidents = Enum.GetName(typeof(DayOfWeek), maxIndex) ?? "Unknown";
-           //(DayOfWeek)maxIndex devuelve el valor del Enum
+            int maxDay = incidentsCountPerDayOfWeek.Max();
+            int maxIndex = incidentsCountPerDayOfWeek.ToList().IndexOf(maxDay);
+            string dayWithMostIncidents = Enum.GetName(typeof(DayOfWeek), maxIndex) ?? "Unknown";
 
-            int hourWithMostIncidents = incidentsCountPerHourOfDay.Max();
+            int maxHour = incidentsCountPerHourOfDay.Max();
+            int hourWithMostIncidents = incidentsCountPerHourOfDay.ToList().IndexOf(maxHour);
 
             TimeSpan totalResolutionTime = TimeSpan.Zero;
             int closedIncidentsCount = DbContext.Incidents
@@ -90,7 +89,7 @@ namespace ITIL.Controllers
                 IncidentsPerHour = incidentsPerHour,
                 DayWithMostIncidents = dayWithMostIncidents,
                 HourWithMostIncidents = hourWithMostIncidents,
-                AvgResolutionTime = avgResolutionTime
+                AvgResolutionTime = avgResolutionTime.ToString()
             };
 
             return incidentMetrics;
