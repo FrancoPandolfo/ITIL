@@ -86,6 +86,7 @@ namespace ITIL.Controllers
                     incident.Priority = modifiedIncident.Priority;
                     incident.LastUpdated = DateTime.UtcNow;
                     incident.RootCause = modifiedIncident.RootCause;
+                    if(incident.State == State.IMPLEMENTADO){ incident.ClosedDate = DateTime.UtcNow; }
                     DbContext.Incidents.Update(incident);
                     DbContext.SaveChanges();
                     return Ok(incident);
