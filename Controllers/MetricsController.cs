@@ -28,7 +28,7 @@ namespace ITIL.Controllers
 
         public IncidentMetricsDto GetIncidentMetrics()
         {
-            DateTime startDate = new DateTime(2023, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            DateTime startDate = new DateTime(2023, 5, 20, 0, 0, 0, DateTimeKind.Utc);
             DateTime endDate = DateTime.UtcNow;
 
             int totalDays = (int)(endDate - startDate).TotalDays;
