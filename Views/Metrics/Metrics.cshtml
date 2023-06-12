@@ -163,7 +163,15 @@
                     datasets: [
                         {
                             label: "Incidents per Day",
-                            data: data.incidentsPerDay,
+                            data: [
+                                    data.incidentsPerDay[1], // Monday
+                                    data.incidentsPerDay[2], // Tuesday
+                                    data.incidentsPerDay[3], // Wednesday
+                                    data.incidentsPerDay[4], // Thursday
+                                    data.incidentsPerDay[5], // Friday
+                                    data.incidentsPerDay[6], // Saturday
+                                    data.incidentsPerDay[0]  // Sunday
+                                ],
                             backgroundColor: "rgba(75, 192, 192, 0.6)"
                         }
                     ]
