@@ -103,6 +103,8 @@ namespace ITIL.Controllers
         public IActionResult ChangeInfo(long changeId)
         {
             var change = DbContext.Changes
+            .Include(i => i.AssignedUser)
+            .Include(i => i.ConfigurationItem)
             .SingleOrDefault(i => i.Id == changeId);
             if(change != null)
             {

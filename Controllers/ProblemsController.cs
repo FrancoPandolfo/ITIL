@@ -88,7 +88,7 @@ namespace ITIL.Controllers
         [HttpGet("/Problems/{problemId}")]
         public IActionResult ProblemInfo(long problemId)
         {
-            var problem = DbContext.Problems.SingleOrDefault(i => i.Id == problemId);
+            var problem = DbContext.Problems.Include(i => i.AssignedUser).Include(i => i.ConfigurationItem).SingleOrDefault(i => i.Id == problemId);
             if(problem != null)
             {
               var configurationItem = DbContext.Configuration.SingleOrDefault(c => c.Id == problem.ConfigurationItemId);

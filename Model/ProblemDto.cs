@@ -10,5 +10,9 @@ namespace ITIL.Model
         public string Impact {get;set;}
         public string Priority {get;set;}
         public List<int> IncidentIds { get; set; }
+
+        public ProblemDto(){
+            IncidentIds = new List<int>();
+        }
     }
 }

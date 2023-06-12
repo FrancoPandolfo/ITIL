@@ -15,5 +15,10 @@ namespace ITIL.Model
         public string? ScheduledDate {get;set;}
         public List<int> IncidentIds { get; set; }
         public List<int> ProblemIds { get; set; }
+
+        public ChangeDto(){
+            IncidentIds = new List<int>();
+            ProblemIds = new List<int>();
+        }
     }
 }
