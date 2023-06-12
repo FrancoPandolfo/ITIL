@@ -207,5 +207,13 @@ namespace ITIL.Controllers
 
             return NoContent();
         }
+
+        [HttpGet("/ServiceDesk/GetIncidents")]
+        public List<Incident> GetIncidents()
+        {
+            var incidents = DbContext.Incidents
+            .OrderByDescending(i => i.CreatedDate);
+            return incidents.ToList();
+        }
     }
 }

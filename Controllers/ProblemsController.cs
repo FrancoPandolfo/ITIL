@@ -219,5 +219,13 @@ namespace ITIL.Controllers
             }
             return NotFound();
         }
+
+        [HttpGet("/Problems/GetProblems")]
+        public List<Problem> GetProblems()
+        {
+            var problems = DbContext.Problems
+            .OrderByDescending(i => i.CreatedDate);
+            return problems.ToList();
+        }
     }
 }

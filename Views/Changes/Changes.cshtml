@@ -171,6 +171,8 @@
                     <a href="/Changes/@change.Id" class="button-link">Edit</a>
                     <button class="button-link" type="button" onclick="confirmDeleteChange(@change.Id)">Delete</button>
                     <button class="button-link" type="button" onclick="showCommentModal(@change.Id)">Add Comment</button>
+                    <button class="button-link" type="button" onclick="showAddIncidentModal(@change.Id)">Add Incident</button>
+                    <button class="button-link" type="button" onclick="showAddProblemModal(@change.Id)">Add Problem</button>
                 </td>
             </tr>
             <tr>
@@ -209,6 +211,34 @@
         <span class="close" onclick="closeProblemsModal()">&times;</span>
         <h2>Change Problems</h2>
         <ul id="problemsList"></ul>
+    </div>
+</div>
+
+<div id="addIncidentModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close" onclick="closeAddIncidentModal()">&times;</span>
+        <h2>Add Incident</h2>
+        <form id="addIncidentForm">
+            <label for="incidentSelector">Select Incident:</label>
+            <select id="incidentSelector" required>
+            </select>
+            <button type="button" id="saveIncidentButton">Save</button>
+            <button type="button" id="cancelIncidentButton">Cancel</button>
+        </form>
+    </div>
+</div>
+
+<div id="addProblemModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close" onclick="closeAddProblemModal()">&times;</span>
+        <h2>Add Problem</h2>
+        <form id="addProblemForm">
+            <label for="problemSelector">Select Problem:</label>
+            <select id="problemSelector" required>
+            </select>
+            <button type="button" id="saveProblemButton">Save</button>
+            <button type="button" id="cancelProblemButton">Cancel</button>
+        </form>
     </div>
 </div>
 }
@@ -420,10 +450,18 @@ else
                 incidentsList.innerHTML = ""; // Clear any previous incidents
 
                 if (data && data.$values && data.$values.length > 0) {
-                    data.$values.forEach(problem => {
+                    data.$values.forEach(incident => {
                         const incidentElement = document.createElement("li");
-                        incidentElement.textContent = problem.title;
+                        incidentElement.textContent = incident.title;
 
+                        const removeButton = document.createElement("button");
+                        removeButton.textContent = "Remove";
+                        removeButton.classList.add("button-link");
+                        removeButton.addEventListener("click", () => {
+                            removeIncident(changeId, incident.id);
+                        });
+
+                        incidentElement.appendChild(removeButton);
                         incidentsList.appendChild(incidentElement);
                     });
                 } else {
@@ -439,6 +477,23 @@ else
             .catch(error => {
                 console.error(`Error fetching incidents for change ${changeId}:`, error);
             });
+    }
+
+    function removeIncident(changeId, incidentId) {
+        fetch(`/Changes/${changeId}/Incidents/${incidentId}`, {
+            method: "DELETE"
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log(`Incident ${incidentId} removed successfully.`);
+                showIncidentsModal(changeId); // Refresh the incidents list
+            } else {
+                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            }
+        })
+        .catch(error => {
+            console.error(`Error removing incident ${incidentId}:`, error);
+        });
     }
 
     function closeIncidentsModal() {
@@ -466,6 +521,14 @@ else
                         const problemElement = document.createElement("li");
                         problemElement.textContent = problem.title;
 
+                        const removeButton = document.createElement("button");
+                        removeButton.textContent = "Remove";
+                        removeButton.classList.add("button-link");
+                        removeButton.addEventListener("click", () => {
+                            removeProblem(changeId, problem.id);
+                        });
+
+                        problemElement.appendChild(removeButton);
                         problemsList.appendChild(problemElement);
                     });
                 } else {
@@ -483,8 +546,191 @@ else
             });
     }
 
+    function removeProblem(changeId, problemId) {
+        fetch(`/Changes/${changeId}/Problems/${problemId}`, {
+            method: "DELETE"
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log(`Problem ${problemId} removed successfully.`);
+                showProblemsModal(changeId); // Refresh the problems list
+            } else {
+                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            }
+        })
+        .catch(error => {
+            console.error(`Error removing problem ${problemId}:`, error);
+        });
+    }
+
     function closeProblemsModal() {
         const problemsModal = document.getElementById("problemsModal");
         problemsModal.style.display = "none";
+    }
+    
+    function showAddIncidentModal(changeId) {
+        const modal = document.getElementById("addIncidentModal");
+        modal.style.display = "block";
+
+        // Fetch the existing incidents
+        fetch("/ServiceDesk/GetIncidents")
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            })
+            .then(data => {
+                console.log(data); // Log the incidents data to the console
+
+                // Extract the incidents array from the response
+                const incidents = data["$values"];
+
+                // Populate the incident selector options
+                const incidentSelector = document.getElementById("incidentSelector");
+                incidentSelector.innerHTML = ""; // Clear previous options
+
+                incidents.forEach(incident => {
+                    const option = document.createElement("option");
+                    option.value = incident.id;
+                    option.textContent = incident.title;
+                    incidentSelector.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error("Error fetching incidents:", error);
+            });
+
+        // Save button click handler
+        const saveButton = document.getElementById("saveIncidentButton");
+        saveButton.onclick = function () {
+            const incidentSelector = document.getElementById("incidentSelector");
+            const selectedIncidentId = incidentSelector.value;
+
+            if (selectedIncidentId) {
+                addIncident(changeId, selectedIncidentId);
+                modal.style.display = "none";
+            } else {
+                console.error("No incident selected.");
+            }
+        };
+
+        // Cancel button click handler
+        const cancelButton = document.getElementById("cancelIncidentButton");
+        cancelButton.onclick = function () {
+            modal.style.display = "none";
+        };
+    }
+
+    function addIncident(changeId, incidentId) {
+        const url = `/Changes/${changeId}/Incidents/${incidentId}`;
+
+        fetch(url, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ changeId, incidentId })
+        })
+        .then(response => {
+            if (response.ok) {
+                // Handle successful response
+                console.log("Incident added successfully");
+                // Perform any necessary updates or refresh the table
+            } else {
+                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            }
+        })
+        .catch(error => {
+            console.error("Error adding incident:", error);
+        });
+    }
+
+    function closeAddIncidentModal() {
+        const modal = document.getElementById("addIncidentModal");
+        modal.style.display = "none";
+    }
+
+    function showAddProblemModal(changeId) {
+        const modal = document.getElementById("addProblemModal");
+        modal.style.display = "block";
+
+        // Fetch the existing problems
+        fetch("/Problems/GetProblems")
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            })
+            .then(data => {
+                console.log(data); // Log the problems data to the console
+
+                // Extract the problems array from the response
+                const problems = data["$values"];
+
+                // Populate the problem selector options
+                const problemSelector = document.getElementById("problemSelector");
+                problemSelector.innerHTML = ""; // Clear previous options
+
+                problems.forEach(problem => {
+                    const option = document.createElement("option");
+                    option.value = problem.id;
+                    option.textContent = problem.title;
+                    problemSelector.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error("Error fetching problems:", error);
+            });
+
+        // Save button click handler
+        const saveButton = document.getElementById("saveProblemButton");
+        saveButton.onclick = function () {
+            const problemSelector = document.getElementById("problemSelector");
+            const selectedProblemId = problemSelector.value;
+
+            if (selectedProblemId) {
+                addProblem(changeId, selectedProblemId);
+                modal.style.display = "none";
+            } else {
+                console.error("No problem selected.");
+            }
+        };
+
+        // Cancel button click handler
+        const cancelButton = document.getElementById("cancelProblemButton");
+        cancelButton.onclick = function () {
+            modal.style.display = "none";
+        };
+    }
+
+    function addProblem(changeId, problemId) {
+        const url = `/Changes/${changeId}/Problems/${problemId}`;
+
+        fetch(url, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ changeId, problemId })
+        })
+        .then(response => {
+            if (response.ok) {
+                // Handle successful response
+                console.log("Problem added successfully");
+                // Perform any necessary updates or refresh the table
+            } else {
+                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            }
+        })
+        .catch(error => {
+            console.error("Error adding problem:", error);
+        });
+    }
+
+    function closeAddProblemModal() {
+        const modal = document.getElementById("addProblemModal");
+        modal.style.display = "none";
     }
 </script>

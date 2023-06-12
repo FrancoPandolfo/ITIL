@@ -158,6 +158,7 @@
                     <a href="/Problems/@problem.Id" class="button-link">Edit</a>
                     <button class="button-link" type="button" onclick="confirmDeleteProblem(@problem.Id)">Delete</button>
                     <button class="button-link" type="button" onclick="showCommentModal(@problem.Id)">Add Comment</button>
+                    <button class="button-link" type="button" onclick="showAddIncidentModal(@problem.Id)">Add Incident</button>
                 </td>
             </tr>
             <tr>
@@ -190,6 +191,21 @@
         <ul id="incidentsList"></ul>
     </div>
 </div>
+
+<div id="addIncidentModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close" onclick="closeAddIncidentModal()">&times;</span>
+        <h2>Add Incident</h2>
+        <form id="addIncidentForm">
+            <label for="incidentSelector">Select Incident:</label>
+            <select id="incidentSelector" required>
+            </select>
+            <button type="button" id="saveIncidentButton">Save</button>
+            <button type="button" id="cancelIncidentButton">Cancel</button>
+        </form>
+    </div>
+</div>
+
 }
 else
 {
@@ -403,6 +419,14 @@ else
                         const incidentElement = document.createElement("li");
                         incidentElement.textContent = problem.title;
 
+                        const removeButton = document.createElement("button");
+                        removeButton.textContent = "Remove";
+                        removeButton.classList.add("button-link");
+                        removeButton.addEventListener("click", () => {
+                            removeIncident(problemId, problem.id);
+                        });
+
+                        incidentElement.appendChild(removeButton);
                         incidentsList.appendChild(incidentElement);
                     });
                 } else {
@@ -420,8 +444,108 @@ else
             });
     }
 
+    function removeIncident(problemId, incidentId) {
+        fetch(`/Problems/${problemId}/Incidents/${incidentId}`, {
+            method: "DELETE"
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log(`Incident ${incidentId} removed successfully.`);
+                showIncidentsModal(problemId); // Refresh the incidents list
+            } else {
+                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            }
+        })
+        .catch(error => {
+            console.error(`Error removing incident ${incidentId}:`, error);
+        });
+    }
+
     function closeIncidentsModal() {
         const incidentsModal = document.getElementById("incidentsModal");
         incidentsModal.style.display = "none";
+    }
+
+    function showAddIncidentModal(problemId) {
+        const modal = document.getElementById("addIncidentModal");
+        modal.style.display = "block";
+
+        // Fetch the existing incidents
+        fetch("/ServiceDesk/GetIncidents")
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            })
+            .then(data => {
+                console.log(data); // Log the incidents data to the console
+
+                // Extract the incidents array from the response
+                const incidents = data["$values"];
+
+                // Populate the incident selector options
+                const incidentSelector = document.getElementById("incidentSelector");
+                incidentSelector.innerHTML = ""; // Clear previous options
+
+                incidents.forEach(incident => {
+                    const option = document.createElement("option");
+                    option.value = incident.id;
+                    option.textContent = incident.title;
+                    incidentSelector.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error("Error fetching incidents:", error);
+            });
+
+        // Save button click handler
+        const saveButton = document.getElementById("saveIncidentButton");
+        saveButton.onclick = function () {
+            const incidentSelector = document.getElementById("incidentSelector");
+            const selectedIncidentId = incidentSelector.value;
+
+            if (selectedIncidentId) {
+                addIncident(problemId, selectedIncidentId);
+                modal.style.display = "none";
+            } else {
+                console.error("No incident selected.");
+            }
+        };
+
+        // Cancel button click handler
+        const cancelButton = document.getElementById("cancelIncidentButton");
+        cancelButton.onclick = function () {
+            modal.style.display = "none";
+        };
+    }
+
+    function addIncident(problemId, incidentId) {
+        const url = `/Problems/${problemId}/Incidents/${incidentId}`;
+
+        fetch(url, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ problemId, incidentId })
+        })
+        .then(response => {
+            if (response.ok) {
+                // Handle successful response
+                console.log("Incident added successfully");
+                // Perform any necessary updates or refresh the table
+            } else {
+                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            }
+        })
+        .catch(error => {
+            console.error("Error adding incident:", error);
+        });
+    }
+
+    function closeAddIncidentModal() {
+        const modal = document.getElementById("addIncidentModal");
+        modal.style.display = "none";
     }
 </script>
