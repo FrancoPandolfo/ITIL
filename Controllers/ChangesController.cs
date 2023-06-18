@@ -310,5 +310,37 @@ namespace ITIL.Controllers
             }
             return NotFound();
         }
+
+        [HttpPatch("/Changes/{changeId}/StateUpdate")]
+        public IActionResult StateUpdate([FromBody] string state, long changeId)
+        {
+            var change = DbContext.Changes.Include(i => i.ConfigurationItem).SingleOrDefault(i => i.Id == changeId);    
+            if (change != null){
+                change.State = state;
+                if (state == State.IMPLEMENTADO){
+                    var item = change.ConfigurationItem;
+                    var history = JsonConvert.DeserializeObject<Dictionary<string, object>>(item.VersionHistory);
+                    var newVersionKey = "v1.0";
+                    var highestVersionKey = "v0";
+                    if(history != null){
+                        highestVersionKey = history.Keys.Where(key => key.StartsWith("v"))
+                        .Select(key => key.Substring(1))
+                        .OrderByDescending(version => float.Parse(version, CultureInfo.InvariantCulture.NumberFormat))
+                        .FirstOrDefault();
+                        newVersionKey = IncrementVersion(highestVersionKey);
+                    }
+                    if (history == null) {history = new Dictionary<string, object>();}
+                    var newDescription = item.Description + $". Modified according to {change.Title} change. Update from {highestVersionKey} to {newVersionKey}";
+                    history[newVersionKey] = String.Format("Titulo:{0}|Descripcion:{1}", item.Title, newDescription);
+                    item.VersionId = newVersionKey;
+                    item.VersionHistory =  JsonConvert.SerializeObject(history);
+                    item.Description = newDescription;
+                }
+                DbContext.Changes.Update(change);
+                DbContext.SaveChanges();
+                return Ok(change);
+            }
+            return BadRequest();
+        }
     }
 }
