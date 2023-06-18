@@ -1,8 +1,10 @@
+using System.Globalization;
 using ITIL.Data;
 using ITIL.Data.Domain;
 using ITIL.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace ITIL.Controllers
 {
@@ -69,13 +71,33 @@ namespace ITIL.Controllers
         {
             if (ModelState.IsValid)
             {
-                var change = DbContext.Changes.Include(i => i.AssignedUser).SingleOrDefault(i => i.Id == changeId);
+                var change = DbContext.Changes.Include(i => i.AssignedUser).Include(i => i.ConfigurationItem).SingleOrDefault(i => i.Id == changeId);
                 var assignedUser = DbContext.Users.SingleOrDefault(u => u.Id == modifiedChange.AssignedUserId);
                 if(change != null)
                 {
                     change.Title = modifiedChange.Title;
                     change.Description = modifiedChange.Description;
                     change.State = modifiedChange.State;
+                    if (modifiedChange.State == State.IMPLEMENTADO)
+                    {
+                        var item = change.ConfigurationItem;
+                        var history = JsonConvert.DeserializeObject<Dictionary<string, object>>(item.VersionHistory);
+                        var newVersionKey = "v1.0";
+                        var highestVersionKey = "v0";
+                        if(history != null){
+                            highestVersionKey = history.Keys.Where(key => key.StartsWith("v"))
+                            .Select(key => key.Substring(1))
+                            .OrderByDescending(version => float.Parse(version, CultureInfo.InvariantCulture.NumberFormat))
+                            .FirstOrDefault();
+                            newVersionKey = IncrementVersion(highestVersionKey);
+                        }
+                        if (history == null) {history = new Dictionary<string, object>();}
+                        var newDescription = item.Description + $". Modified according to {change.Title} change. Update from {highestVersionKey} to {newVersionKey}";
+                        history[newVersionKey] = String.Format("Titulo:{0}|Descripcion:{1}", item.Title, newDescription);
+                        item.VersionId = newVersionKey;
+                        item.VersionHistory =  JsonConvert.SerializeObject(history);
+                        item.Description = newDescription;
+                    }
                     change.AssignedUserId = modifiedChange.AssignedUserId;
                     change.AssignedUser = assignedUser;
                     change.Impact = modifiedChange.Impact;
@@ -86,6 +108,15 @@ namespace ITIL.Controllers
                 }
             }
             return BadRequest();
+        }
+
+        private static string IncrementVersion(string versionKey)
+        {
+            var key = versionKey.Substring(1);
+            var number = float.Parse(key, CultureInfo.InvariantCulture.NumberFormat);
+            var newNumber = number + 0.1;
+            var newVersion = "v" + newNumber.ToString();
+            return newVersion;
         }
 
         [HttpGet("/Changes")]
