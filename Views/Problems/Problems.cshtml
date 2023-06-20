@@ -1,6 +1,9 @@
 @using ITIL.Data.Domain;
 @model IEnumerable<Problem>
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
 @{
     ViewData["Title"] = "Problemas";
 }
@@ -102,115 +105,120 @@
     }
 </style>
 
-<h1>@ViewData["Title"]</h1>
-
-<a class="new-problem-button" href="/Problems/NewProblem">Nuevo Problema</a>
-
-<div class="user-links">
-    @if (User.Identity.IsAuthenticated)
-    {
-        <span>@User.Identity.Name</span>
-    }
-    <a class="volver-link" href="/Home/Index">Volver</a>
-</div>
-
-@if (Model.Any())
-{
-<table>
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Assigned To</th>
-            <th>Impact</th>
-            <th>Priority</th>
-            <th>Created Date</th>
-            <th>Incidents</th>
-            <th>Comments</th>
-            <th>Actions</th>
-        </tr>
-        <tr>
-            <th><input type="text" id="filterProblemTitle" onkeyup="filterTable('ProblemTitle', this.value)" placeholder="Filter Title"></th>
-            <th><input type="text" id="filterProblemDescription" onkeyup="filterTable('ProblemDescription', this.value)" placeholder="Filter Description"></th>
-            <th><input type="text" id="filterProblemAssignedTo" onkeyup="filterTable('ProblemAssignedTo', this.value)" placeholder="Filter Assigned To"></th>
-            <th><input type="text" id="filterProblemImpact" onkeyup="filterTable('ProblemImpact', this.value)" placeholder="Filter Impact"></th>
-            <th><input type="text" id="filterProblemPriority" onkeyup="filterTable('ProblemPriority', this.value)" placeholder="Filter Priority"></th>
-            <th><input type="text" id="filterProblemCreatedDate" onkeyup="filterTable('ProblemCreatedDate', this.value)" placeholder="Filter Created Date"></th>
-        </tr>
-    </thead>
-    <tbody id="problemTableBody">
-        @foreach (var problem in Model)
+<div class="container-fluid">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">ITIL</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="#">Incidentes</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Problemas<span class="sr-only">(current)</span></a>
+            </li>
+            </ul>
+            <span class="navbar-text">
+                @if (User.Identity.IsAuthenticated)
+                {
+                <div>
+                    @User.Identity.Name
+                    <a class="volver-link" href="/Home/Index">Volver</a>
+                </div>
+                }
+            </span>
+        </div>
+    </nav> 
+    <a class="btn btn-outline-success" href="/Problems/NewProblem" role="button">+ New</a>
+    @if (Model.Any())
         {
+        <table class="table">
+        <thead>
             <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Assigned To</th>
+                <th scope="col">Impact</th>
+                <th scope="col">Priority</th>
+                <th scope="col">Created Date</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var problem in Model)
+            {
+            <tr> 
                 <td>@problem.Title</td>
-                <td>@problem.Description</td>
                 <td>@problem.AssignedUser.Email</td>
                 <td>@problem.Impact</td>
                 <td>@problem.Priority</td>
                 <td>@problem.CreatedDate</td>
-                <td>
-                    <button class="button-link" type="button" onclick='showIncidentsModal("@problem.Id")'>View Incidents</button>
-                </td>
-                <td>
-                    <button class="button-link" type="button" onclick='showCommentsModal("@problem.Id")'>View Comments</button>
-                </td>
-                <td>
-                    <a href="/Problems/@problem.Id" class="button-link">Edit</a>
-                    <button class="button-link" type="button" onclick="confirmDeleteProblem(@problem.Id)">Delete</button>
-                    <button class="button-link" type="button" onclick="showCommentModal(@problem.Id)">Add Comment</button>
-                    <button class="button-link" type="button" onclick="showAddIncidentModal(@problem.Id)">Add Incident</button>
+                <td><div class="btn-group">
+                    <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Actions
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="/Problems/@problem.Id">Edit</a>
+                        <a class="dropdown-item" href="#" onclick='showCommentsModal("@problem.Id")'>View Comments</a>
+                        <a class="dropdown-item" href="#" onclick="showCommentModal(@problem.Id)">Add Comment</a>
+                        <a class="dropdown-item" href="#" onclick='showIncidentsModal("@problem.Id")'>View Incidents</a>
+                        <a class="dropdown-item" href="#" onclick="showAddIncidentModal(@problem.Id)">Add Incident</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#" onclick="confirmDeleteProblem(@problem.Id)">Delete</a>
+                    </div>
+                    </div>
                 </td>
             </tr>
-            <tr>
-                <td colspan="6"><hr></td>
-            </tr>
+            }
+        </tbody>
+        </table>
+ 
+
+        <div id="commentModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <textarea id="commentInput" placeholder="Enter your comment"></textarea>
+                <button id="saveCommentButton" onclick="saveComment()">Save Comment</button>
+            </div>
+        </div>
+
+        <div id="commentsModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" onclick="closeCommentsModal()">&times;</span>
+                <h2>Problem Comments</h2>
+                <ul id="commentsList"></ul>
+            </div>
+        </div>
+
+        <div id="incidentsModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" onclick="closeIncidentsModal()">&times;</span>
+                <h2>Problem Incidents</h2>
+                <ul id="incidentsList"></ul>
+            </div>
+        </div>
+
+        <div id="addIncidentModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" onclick="closeAddIncidentModal()">&times;</span>
+                <h2>Add Incident</h2>
+                <form id="addIncidentForm">
+                    <label for="incidentSelector">Select Incident:</label>
+                    <select id="incidentSelector" required>
+                    </select>
+                    <button type="button" id="saveIncidentButton">Save</button>
+                    <button type="button" id="cancelIncidentButton">Cancel</button>
+                </form>
+            </div>
+        </div>
+
         }
-    </tbody>
-</table>
-
-<div id="commentModal" class="modal" style="display: none;">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <textarea id="commentInput" placeholder="Enter your comment"></textarea>
-        <button id="saveCommentButton" onclick="saveComment()">Save Comment</button>
-    </div>
+        else
+        {
+            <p>No problems found.</p>
+        }
 </div>
-
-<div id="commentsModal" class="modal" style="display: none;">
-    <div class="modal-content">
-        <span class="close" onclick="closeCommentsModal()">&times;</span>
-        <h2>Problem Comments</h2>
-        <ul id="commentsList"></ul>
-    </div>
-</div>
-
-<div id="incidentsModal" class="modal" style="display: none;">
-    <div class="modal-content">
-        <span class="close" onclick="closeIncidentsModal()">&times;</span>
-        <h2>Problem Incidents</h2>
-        <ul id="incidentsList"></ul>
-    </div>
-</div>
-
-<div id="addIncidentModal" class="modal" style="display: none;">
-    <div class="modal-content">
-        <span class="close" onclick="closeAddIncidentModal()">&times;</span>
-        <h2>Add Incident</h2>
-        <form id="addIncidentForm">
-            <label for="incidentSelector">Select Incident:</label>
-            <select id="incidentSelector" required>
-            </select>
-            <button type="button" id="saveIncidentButton">Save</button>
-            <button type="button" id="cancelIncidentButton">Cancel</button>
-        </form>
-    </div>
-</div>
-
-}
-else
-{
-    <p>No problems found.</p>
-}
 
 <script>
     function confirmDeleteProblem(problemId) {
@@ -549,3 +557,7 @@ else
         modal.style.display = "none";
     }
 </script>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
