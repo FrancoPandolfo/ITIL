@@ -165,7 +165,7 @@
                     labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
                     datasets: [
                         {
-                            label: "Incidents per Day",
+                            label: "Incidents per Day (from the last 30 days)",
                             data: [
                                     data.incidentsPerDay[1], // Monday
                                     data.incidentsPerDay[2], // Tuesday
@@ -196,7 +196,7 @@
                     labels: Array.from({ length: 24 }, (_, i) => i),
                     datasets: [
                         {
-                            label: "Incidents per Hour",
+                            label: "Incidents per Hour (from the last 7 days)",
                             data: data.incidentsPerHour,
                             borderColor: "rgba(255, 99, 132, 1)",
                             backgroundColor: "rgba(255, 99, 132, 0.2)"
@@ -207,7 +207,7 @@
                     scales: {
                         y: {
                             beginAtZero: true,
-                            max: 1
+                            max: 40
                         }
                     }
                 }

@@ -28,32 +28,66 @@ namespace ITIL.Controllers
 
         public IncidentMetricsDto GetIncidentMetrics()
         {
-            DateTime startDate = new DateTime(2023, 5, 20, 0, 0, 0, DateTimeKind.Utc);
+            DateTime startDate = DateTime.UtcNow.AddDays(-30);
             DateTime endDate = DateTime.UtcNow;
 
+            DateTime startDateForHours = DateTime.UtcNow.AddDays(-7);
             int totalDays = (int)(endDate - startDate).TotalDays;
-            int totalHours = (int)(endDate - startDate).TotalHours;
+            int totalHours = (int)(endDate - startDateForHours).TotalHours;
 
             float[] incidentsPerDay = new float[7];
             float[] incidentsPerHour = new float[24];
 
-            int[] incidentsCountPerDayOfWeek = DbContext.Incidents
+            //se agrupa por cada dia de la semana y se suma cuantos incidentes hay cada uno de esos dias.
+            var groupByDayOfWeek = DbContext.Incidents
                 .Where(i => i.CreatedDate >= startDate && i.CreatedDate <= endDate)
                 .GroupBy(i => i.CreatedDate.DayOfWeek)
-                .Select(g => g.Count())
-                .ToArray();
+                .Select(g => new { DayOfWeek = g.Key, Count = g.Count() });
 
+            int[] incidentsCountPerDayOfWeek = new int[7]; // Array to store the result
+
+            //inicializamos cada dia de la semana en 0.
+            for(int i = 0; i < 7; i++)
+            {
+                incidentsCountPerDayOfWeek[i] = 0;
+            }
+
+            //completamos con la info de la query almacenada en groupByDayOfWeek
+            foreach (var item in groupByDayOfWeek)
+            {
+                int dayOfWeek = (int)item.DayOfWeek;
+                incidentsCountPerDayOfWeek[dayOfWeek] = item.Count;
+            }
+
+            //finalmente dividimos la sumatoria de cada dia por 30, que es la cantidad total de dias.
             for (int i = 0; i < incidentsCountPerDayOfWeek.Length; i++)
             {
                 incidentsPerDay[i] = (float)incidentsCountPerDayOfWeek[i] / totalDays;
             }
 
-            int[] incidentsCountPerHourOfDay = DbContext.Incidents
+            //se agrupa por cada hora del dia y se suma cuantos incidentes hay cada uno de esas horas.
+            //se resta 3 para que sea hora local.
+            var groupByHourOfDay= DbContext.Incidents
                 .Where(i => i.CreatedDate >= startDate && i.CreatedDate <= endDate)
-                .GroupBy(i => i.CreatedDate.Hour)
-                .Select(g => g.Count())
-                .ToArray();
+                .GroupBy(i => (i.CreatedDate.Hour - 3))
+                .Select(g => new { Hour = g.Key, Count = g.Count() });
 
+            float[] incidentsCountPerHourOfDay = new float[24]; // Array to store the result
+
+            //inicializamos cada hora del dia en 0.
+            for(int i = 0; i < 24; i++)
+            {
+                incidentsCountPerHourOfDay[i] = 0;
+            }
+
+            //completamos con la info de la query almacenada en groupByHourOfDay
+            foreach (var item in groupByHourOfDay)
+            {
+                int hour = item.Hour;
+                incidentsCountPerHourOfDay[hour] = (float)item.Count;
+            }
+
+            //esta division no la hacemos porque quedaria un numero muy pequeño.
             for (int i = 0; i < incidentsCountPerHourOfDay.Length; i++)
             {
                 incidentsPerHour[i] = (float)incidentsCountPerHourOfDay[i] / totalHours;
@@ -63,7 +97,7 @@ namespace ITIL.Controllers
             int maxIndex = incidentsCountPerDayOfWeek.ToList().IndexOf(maxDay);
             string dayWithMostIncidents = Enum.GetName(typeof(DayOfWeek), maxIndex) ?? "Unknown";
 
-            int maxHour = incidentsCountPerHourOfDay.Max();
+            int maxHour = (int)incidentsCountPerHourOfDay.Max();
             int hourWithMostIncidents = incidentsCountPerHourOfDay.ToList().IndexOf(maxHour);
 
             TimeSpan totalResolutionTime = TimeSpan.Zero;
@@ -85,8 +119,13 @@ namespace ITIL.Controllers
 
             var incidentMetrics = new IncidentMetricsDto()
             {
+                //se obtiene haciendo la suma total de incidentes para cada dia
+                //tomando los ultimos 30 dias, y dividiendo esa suma por 30 que es
+                //la cantidad total de dias.
                 IncidentsPerDay = incidentsPerDay,
-                IncidentsPerHour = incidentsPerHour,
+                //se obtiene haciendo la suma total de incidentes para cada hora
+                //tomando los ultimos 7 dias.
+                IncidentsPerHour = incidentsCountPerHourOfDay,
                 DayWithMostIncidents = dayWithMostIncidents,
                 HourWithMostIncidents = hourWithMostIncidents,
                 AvgResolutionTime = avgResolutionTime.ToString()
