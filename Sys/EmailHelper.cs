@@ -19,7 +19,7 @@ namespace tp7518.Sys
                 // Creación del mensaje de correo
                 var mailMessage = new MailMessage()
                 {
-                    From = new MailAddress("potg.arg@gmail.com", "ITIL Franco Pandolfo"),
+                    From = new MailAddress("potg.arg@gmail.com", "Gestio"),
                     Subject = subject,
                     Body = body,
                     IsBodyHtml = true

@@ -1,3 +1,4 @@
+using ITIL.Controllers.EmailTemplates;
 using ITIL.Data;
 using ITIL.Data.Domain;
 using ITIL.Model;
@@ -46,6 +47,19 @@ namespace ITIL.Controllers
 
                 DbContext.Problems.Add(problem);
                 DbContext.SaveChanges();
+
+                var trackingNumbers = incidents.Select(i => i.TrackingNumber);
+                NewProblemEmail.Send(new ProblemEmailDto(){
+                    Title = problem.Title, 
+                    TrackingNumbers = trackingNumbers.ToArray(), 
+                    TeamMemberEmail = "fpandolfo@fi.uba.ar"
+                });
+                NewProblemEmail.Send(new ProblemEmailDto(){
+                    Title = problem.Title, 
+                    TrackingNumbers = trackingNumbers.ToArray(), 
+                    TeamMemberEmail = "kspasiuk@fi.uba.ar"
+                });
+
                 return Ok(problem);
             }
 
