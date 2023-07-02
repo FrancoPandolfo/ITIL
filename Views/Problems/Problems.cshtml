@@ -68,41 +68,6 @@
         background-color: #250a91;
     }
 
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.4);
-    }
-
-    .modal-content {
-        background-color: #fefefe;
-        margin: 10% auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 80%;
-        max-width: 600px;
-    }
-
-    .close {
-        color: #888;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-        cursor: pointer;
-    }
-
-    .close:hover,
-    .close:focus {
-        color: #000;
-        text-decoration: none;
-        cursor: pointer;
-    }
 </style>
 
 <div class="container-fluid">
@@ -178,46 +143,89 @@
             </tr>
             }
         </tbody>
-        </table>
+    </table>
  
 
-        <div id="commentModal" class="modal" style="display: none;">
+    <div id="commentModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <span class="close">&times;</span>
-                <textarea id="commentInput" placeholder="Enter your comment"></textarea>
-                <button id="saveCommentButton" onclick="saveComment()">Save Comment</button>
+                <div class="modal-header">
+                    <h5 class="modal-title">New Comment</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                 <div class="modal-body">
+                    <form>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">Comment:</label>
+                        <textarea class="form-control" id="commentInput" placeholder="Enter your comment"></textarea>
+                    </div>
+                    </form>
+                </div>
+                 <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="saveCommentButton" onclick="saveComment()">Save Comment</button>
+                </div>
             </div>
-        </div>
+        </div>   
+    </div>
 
-        <div id="commentsModal" class="modal" style="display: none;">
+    <div id="commentsModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <span class="close" onclick="closeCommentsModal()">&times;</span>
-                <h2>Problem Comments</h2>
-                <ul id="commentsList"></ul>
+                <div class="modal-header">
+                    <h5 class="modal-title">Problem Comments</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                 <div class="modal-body">
+                    <ul id="commentsList" class="list-group"></ul>
+                </div>
             </div>
-        </div>
+        </div>   
+    </div>
 
-        <div id="incidentsModal" class="modal" style="display: none;">
+    <div id="incidentsModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <span class="close" onclick="closeIncidentsModal()">&times;</span>
-                <h2>Problem Incidents</h2>
-                <ul id="incidentsList"></ul>
+                <div class="modal-header">
+                    <h5 class="modal-title">Problem Incidents</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                 <div class="modal-body">
+                    <ul id="incidentsList" class="list-group"></ul>
+                </div>
             </div>
-        </div>
+        </div>   
+    </div>
 
-        <div id="addIncidentModal" class="modal" style="display: none;">
+    <div id="addIncidentModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <span class="close" onclick="closeAddIncidentModal()">&times;</span>
-                <h2>Add Incident</h2>
-                <form id="addIncidentForm">
-                    <label for="incidentSelector">Select Incident:</label>
-                    <select id="incidentSelector" required>
-                    </select>
-                    <button type="button" id="saveIncidentButton">Save</button>
-                    <button type="button" id="cancelIncidentButton">Cancel</button>
-                </form>
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Incident</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                 <div class="modal-body">
+                    <form id="addIncidentForm">
+                    <div class="form-group">
+                        <label for="incidentSelector">Select Incident:</label>
+                        <select id="incidentSelector" required></select>
+                    </div>
+                    </form>
+                </div>
+                 <div class="modal-footer">
+                    <button type="button" id="saveIncidentButton" class="btn btn-primary">Save</button>
+                    <button type="button" id="cancelIncidentButton" class="btn btn-secondary">Cancel</button>
+                </div>
             </div>
-        </div>
+        </div>   
+    </div>
 
         }
         else
@@ -293,12 +301,12 @@
     // Function to show the modal
     function showCommentModal(problemId) {
         currentProblemId = problemId;
-        modal.style.display = "block";
+        $('#commentModal').modal('show');
     }
 
     // Function to close the modal
     function closeModal() {
-        modal.style.display = "none";
+        $('#commentModal').modal('hide');
     }
 
     // Close the modal if the user clicks on the close button (X)
@@ -358,6 +366,7 @@
                 if (data && data.comments && data.comments.$values.length > 0) {
                     data.comments.$values.forEach((comment, index) => {
                         const commentElement = document.createElement("li");
+                        commentElement.className = "list-group-item";
                         commentElement.textContent = comment;
 
                         // Create the delete button for the comment
@@ -377,7 +386,7 @@
 
                 // Display the comments modal
                 const commentsModal = document.getElementById("commentsModal");
-                commentsModal.style.display = "block";
+                $('#commentsModal').modal('show');
             })
             .catch(error => {
                 console.error(`Error fetching comments for problem ${problemId}:`, error);
@@ -409,8 +418,7 @@
     }
 
     function closeCommentsModal() {
-        const commentsModal = document.getElementById("commentsModal");
-        commentsModal.style.display = "none";
+        $('#commentsModal').modal('hide');
     }
     
     function showIncidentsModal(problemId) {
@@ -431,6 +439,7 @@
                 if (data && data.$values && data.$values.length > 0) {
                     data.$values.forEach(problem => {
                         const incidentElement = document.createElement("li");
+                        incidentElement.className = "list-group-item";
                         incidentElement.textContent = problem.title;
 
                         const removeButton = document.createElement("button");
@@ -450,8 +459,7 @@
                 }
 
                 // Display the incidents modal
-                const incidentsModal = document.getElementById("incidentsModal");
-                incidentsModal.style.display = "block";
+                $('#incidentsModal').modal('show');
             })
             .catch(error => {
                 console.error(`Error fetching incidents for problem ${problemId}:`, error);
@@ -481,8 +489,7 @@
     }
 
     function showAddIncidentModal(problemId) {
-        const modal = document.getElementById("addIncidentModal");
-        modal.style.display = "block";
+        $('#addIncidentModal').modal('show');
 
         // Fetch the existing incidents
         fetch("/ServiceDesk/GetIncidents")
@@ -559,8 +566,7 @@
     }
 
     function closeAddIncidentModal() {
-        const modal = document.getElementById("addIncidentModal");
-        modal.style.display = "none";
+        $('#addIncidentModal').modal('hide');
     }
 </script>
 
