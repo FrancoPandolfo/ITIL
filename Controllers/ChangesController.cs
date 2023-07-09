@@ -82,13 +82,14 @@ namespace ITIL.Controllers
                     {
                         var item = change.ConfigurationItem;
                         var history = JsonConvert.DeserializeObject<Dictionary<string, object>>(item.VersionHistory);
-                        var newVersionKey = "v1.0";
-                        var highestVersionKey = "v0";
+                        var highestVersionKey = change.ConfigurationItem.VersionId == null ? "v1.0" : change.ConfigurationItem.VersionId;
+                        var newVersionKey = IncrementVersion(highestVersionKey);
                         if(history != null){
                             highestVersionKey = history.Keys.Where(key => key.StartsWith("v"))
                             .Select(key => key.Substring(1))
                             .OrderByDescending(version => float.Parse(version, CultureInfo.InvariantCulture.NumberFormat))
                             .FirstOrDefault();
+                            highestVersionKey = "v" + highestVersionKey;
                             newVersionKey = IncrementVersion(highestVersionKey);
                         }
                         if (history == null) {history = new Dictionary<string, object>();}
@@ -116,7 +117,7 @@ namespace ITIL.Controllers
             var number = float.Parse(key, CultureInfo.InvariantCulture.NumberFormat);
             var newNumber = number + 0.1;
             var newVersion = "v" + newNumber.ToString();
-            return newVersion;
+            return newVersion.Replace(',','.');
         }
 
         [HttpGet("/Changes")]
