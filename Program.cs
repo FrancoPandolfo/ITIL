@@ -5,6 +5,8 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddJsonFile($"appsettings.json", optional: true, reloadOnChange: false);
+
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("MyPostgresConnection") ?? throw new InvalidOperationException("Connection string 'MyPostgresConnection' not found.");
 builder.Services.AddDbContext<ITILDbContext>(options =>
