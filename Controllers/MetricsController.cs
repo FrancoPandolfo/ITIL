@@ -31,7 +31,7 @@ namespace ITIL.Controllers
             DateTime startDate = DateTime.UtcNow.AddDays(-30);
             DateTime endDate = DateTime.UtcNow;
 
-            DateTime startDateForHours = DateTime.UtcNow.AddDays(-7);
+            DateTime startDateForHours = DateTime.UtcNow.AddDays(-9);
             int totalDays = (int)(endDate - startDate).TotalDays;
             int totalHours = (int)(endDate - startDateForHours).TotalHours;
 
